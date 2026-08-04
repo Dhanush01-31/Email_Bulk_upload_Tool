@@ -1,0 +1,451 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard | Email Upload Tool
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Welcome -->
+    <div class="container-fluid d-flex justify-content-between">
+    <div class="mb-4">
+
+        <h2 class="fw-bold">
+            Welcome, {{ user.username }}
+        </h2>
+
+        <p class="text-muted">
+            Manage your bulk email campaigns from one place.
+        </p>
+
+    </div>
+    <div>
+        <a href="{% url 'download_template' %}"
+   class="btn btn-outline-success rounded-pill">
+
+    <i class="bi bi-download me-2"></i>
+    Download Template
+    </a>
+    </div>
+    </div>
+
+
+<!-- Upload + Statistics -->
+
+<div class="row mt-5 g-4">
+
+    <!-- Left Side -->
+
+    <div class="col-lg-7">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-body text-center p-4">
+
+                <i class="bi bi-cloud-arrow-up-fill text-primary display-4"></i>
+
+                <h3 class="mt-3">
+                    Upload Email Excel File
+                </h3>
+
+                <p class="text-muted">
+                    Upload an Excel file containing
+                    <strong>Name</strong> and
+                    <strong>Email</strong> columns to send personalized emails.
+                </p>
+
+                <button
+                    class="btn btn-primary btn-lg rounded-pill px-4"
+                    data-bs-toggle="modal"
+                    data-bs-target="#uploadModal">
+
+                    <i class="bi bi-upload me-2"></i>
+                    Upload Excel
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Right Side -->
+
+   <div class="col-lg-5 d-flex flex-column align-items-center">
+
+    <!-- Emails Sent -->
+    <div class="card shadow-sm border-0 mb-3 w-100" style="max-width:350px;">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <small class="text-muted">Emails Sent</small>
+                <h3 class="fw-bold mb-0">{{ total_sent }}</h3>
+            </div>
+            <i class="bi bi-envelope-check-fill text-success fs-1"></i>
+        </div>
+    </div>
+
+    <!-- Failed -->
+    <div class="card shadow-sm border-0 mb-3 w-100" style="max-width:350px;">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <small class="text-muted">Failed Emails</small>
+                <h3 class="fw-bold mb-0">{{ total_failed }}</h3>
+            </div>
+            <i class="bi bi-x-circle-fill text-danger fs-1"></i>
+        </div>
+    </div>
+
+    <!-- Total Logs -->
+    <div class="card shadow-sm border-0 w-100" style="max-width:350px;">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <small class="text-muted">Total Logs</small>
+                <h3 class="fw-bold mb-0">{{ total_logs }}</h3>
+            </div>
+            <i class="bi bi-clock-history text-primary fs-1"></i>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+
+    <!-- Recent Email Logs -->
+
+    <div class="card shadow border-0 mt-5">
+
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+                Recent Email Logs
+            </h5>
+
+            <a href="{% url 'email_logs' %}"
+               class="btn btn-sm btn-light">
+
+                View All
+
+            </a>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-hover mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for log in logs %}
+
+                    <tr>
+
+                        <td>{{ log.recipient_name }}</td>
+
+                        <td>{{ log.recipient_email }}</td>
+
+                        <td>{{ log.subject }}</td>
+
+                        <td>
+
+                            {% if log.status == "Sent" %}
+
+                                <span class="badge bg-success">
+                                    Sent
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+                                    Failed
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ log.sent_at|date:"d M Y h:i A" }}</td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center py-4">
+
+                            No email logs found.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Send Bulk Email Modal -->
+<!-- Send Bulk Email Modal -->
+<div class="modal fade"
+     id="uploadModal"
+     tabindex="-1"
+     aria-labelledby="uploadModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+        <div class="modal-content shadow">
+
+            <!-- Header -->
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title" id="uploadModalLabel">
+                    <i class="bi bi-envelope-paper-fill me-2"></i>
+                    Send Bulk Email
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- Form -->
+            <form
+                method="POST"
+                action="{% url 'send_bulk_email' %}"
+                enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <!-- Email Template -->
+<div class="mb-3">
+
+    <label class="form-label fw-semibold">
+        Select Email Template
+        <span class="text-danger">*</span>
+    </label>
+
+    <div class="form-check">
+        <input
+            class="form-check-input"
+            type="radio"
+            name="email_template"
+            id="ce_template"
+            value="ce"
+            checked>
+
+        <label class="form-check-label" for="ce_template">
+            CE Team Template
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input
+            class="form-check-input"
+            type="radio"
+            name="email_template"
+            id="functional_template"
+            value="functional">
+
+        <label class="form-check-label" for="functional_template">
+            SupplyChain Team Template
+        </label>
+    </div>
+
+</div>
+
+                    <!-- Subject -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Email Subject
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="subject"
+                            class="form-control"
+                            placeholder="Enter email subject"
+                            required>
+
+                    </div>
+
+                    <!-- Recipient Excel -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Recipient Excel File
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="file"
+                            name="email_excel"
+                            class="form-control"
+                            accept=".xlsx,.xls"
+                            required>
+
+                        <small class="text-muted">
+                            Upload the Excel file containing recipient names and email addresses.
+                        </small>
+
+                    </div>
+
+                    <!-- Email Description -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Email Description
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <textarea
+                            name="description"
+                            class="form-control"
+                            rows="6"
+                            placeholder="Enter your email message here..."
+                            required></textarea>
+
+                    </div>
+
+                    <!-- Description Image -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Description Image
+                        </label>
+
+                        <input
+                            type="file"
+                            name="description_image"
+                            class="form-control"
+                            accept="image/*">
+
+                        <small class="text-muted">
+                            Optional. This image will be displayed inside the email body.
+                        </small>
+
+                    </div>
+
+                    <!-- Attachments -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Email Attachments
+                        </label>
+
+                        <input
+                            type="file"
+                            name="attachments"
+                            class="form-control"
+                            multiple>
+
+                        <small class="text-muted">
+                            You can attach multiple files (PDF, DOCX, XLSX, PPTX, Images, ZIP, etc.).
+                        </small>
+
+                    </div>
+
+                    <!-- Download Template -->
+                    <div class="mb-3">
+
+                        <a href="{% url 'download_template' %}"
+                           class="btn btn-outline-success">
+
+                            <i class="bi bi-download"></i>
+                            Download Excel Template
+
+                        </a>
+
+                    </div>
+
+                    <!-- Information -->
+                    <div class="alert alert-info">
+
+                        <h6 class="fw-bold mb-2">
+
+                            <i class="bi bi-info-circle-fill"></i>
+                            Excel Requirements
+
+                        </h6>
+
+                        <ul class="mb-0">
+
+                            <li>The Excel file must contain only the following columns:</li>
+                            <li><strong>Name</strong></li>
+                            <li><strong>Email</strong></li>
+                            <li>First row must contain the column headers.</li>
+                            <li>Supported formats: <strong>.xlsx</strong> and <strong>.xls</strong>.</li>
+                            <li>Email description and image are entered using this form (not in Excel).</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        <i class="bi bi-x-circle"></i>
+                        Cancel
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-send-fill"></i>
+                        Send Bulk Emails
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+         
+
+{% endblock %}

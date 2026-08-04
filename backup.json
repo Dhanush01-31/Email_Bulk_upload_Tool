@@ -1,0 +1,592 @@
+[
+{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$Tx3YGUFIr8j6J9EvSjXK1V$FRwlEtgzhgxxeH4gE4H6hYCeLYH29w8fj9s8r4zD3rs=",
+        "last_login": "2026-07-23T08:47:32.916Z",
+        "is_superuser": false,
+        "username": "dhanush",
+        "first_name": "",
+        "last_name": "",
+        "email": "dhanusharumugam245@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-07-23T04:47:23.129Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 1,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "Sending Email",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T06:00:47.270Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 2,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Mohana",
+        "recipient_email": "mohanamurugesan0105@gmail.com",
+        "subject": "Sending Email",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T06:00:49.217Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 3,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "sending mail with attachments",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T07:13:35.601Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 4,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "Sending Email with attachments and dynamic description",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T07:28:16.864Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 5,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "sending email with email body",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T07:50:55.760Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 6,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "test",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T08:12:55.667Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 7,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "testing",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T08:17:13.327Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 8,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "testing",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T08:28:07.872Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 9,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "testing",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T08:28:11.724Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 10,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "Sending email",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T08:40:28.612Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 11,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Akash",
+        "recipient_email": "akash@inessconsulting.com",
+        "subject": "testing",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T08:48:30.522Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 12,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam245@gmail.com",
+        "subject": "test",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T09:10:12.291Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 13,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "Email testing with image and description",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T09:45:34.421Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 14,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "sending Email to teams",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T09:59:42.404Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 15,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Mohana",
+        "recipient_email": "mohanamurugesan@inessconsulting.com",
+        "subject": "sending Email to teams",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:00:06.179Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 16,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Saravanakumar",
+        "recipient_email": "saravanakumar@inessconsulting,com",
+        "subject": "sending Email to teams",
+        "status": "Failed",
+        "error_message": "Invalid address 'saravanakumar@inessconsulting,com': must be a single address",
+        "sent_at": "2026-07-23T10:00:06.354Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 17,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Siva Prakash",
+        "recipient_email": "sivaprakash@inessconsulting.com",
+        "subject": "sending Email to teams",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:00:30.630Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 18,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Sivasurya",
+        "recipient_email": "sivasurya@inessconsulting.com",
+        "subject": "sending Email to teams",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:00:54.754Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 19,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "testing",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:04:46.170Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 20,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Mohana",
+        "recipient_email": "mohanamurugesan@inessconsulting.com",
+        "subject": "testing",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:05:10.143Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 21,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Saravanakumar",
+        "recipient_email": "saravanakumar@inessconsulting,com",
+        "subject": "testing",
+        "status": "Failed",
+        "error_message": "Invalid address 'saravanakumar@inessconsulting,com': must be a single address",
+        "sent_at": "2026-07-23T10:05:10.326Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 22,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:18:44.105Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 23,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Mohana",
+        "recipient_email": "mohanamurugesan@inessconsulting.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:18:46.210Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 24,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Saravanakumar",
+        "recipient_email": "saravanakumar@inessconsulting,com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Failed",
+        "error_message": "Invalid address 'saravanakumar@inessconsulting,com': must be a single address",
+        "sent_at": "2026-07-23T10:18:46.233Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 25,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:23:46.454Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 26,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Mohana",
+        "recipient_email": "mohanamurugesan@inessconsulting.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:23:48.504Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 27,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Saravanakumar",
+        "recipient_email": "saravanakumar@inessconsulting,com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Failed",
+        "error_message": "Invalid address 'saravanakumar@inessconsulting,com': must be a single address",
+        "sent_at": "2026-07-23T10:23:48.518Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 28,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T10:36:38.661Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 29,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Bill Rosana",
+        "recipient_email": "william.rosana@lamresearch.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:17:03.309Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 30,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Avinash Sharma",
+        "recipient_email": "avinash.sharma@lamresearch.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:17:50.420Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 31,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Nilesh Sonar",
+        "recipient_email": "nilesh.sonar@lamresearch.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:18:38.336Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 32,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Mahendran Kirubakaran",
+        "recipient_email": "km@lamresearch.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:19:25.646Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 33,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Hemanth Kumar",
+        "recipient_email": "hemanth_kumar@amat.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:29:34.833Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 34,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Jose Alas",
+        "recipient_email": "jose_alas@amat.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:30:22.540Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 35,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Kelly White",
+        "recipient_email": "kelly_white@amat.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:31:10.056Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 36,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dhanush",
+        "recipient_email": "dhanusharumugam@inessconsulting.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:31:58.088Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 37,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Harish Vijayakumar",
+        "recipient_email": "harish.vijayakumar@kla.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:37:35.126Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 38,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Tan michael",
+        "recipient_email": "tan.michael@tel.co.jp",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:46:49.796Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 39,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Lee Hwee",
+        "recipient_email": "lee@tel.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:47:37.778Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 40,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Dirk Depta",
+        "recipient_email": "dirk.depta@asml.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:52:56.173Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 41,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "John Iosifidis",
+        "recipient_email": "john .iosifidis@asml.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Failed",
+        "error_message": "Invalid address 'john .iosifidis@asml.com': local-part is not a dot-atom (contains CFWS)",
+        "sent_at": "2026-07-23T11:52:56.195Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 42,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Peter Van Nieuwenhuijze",
+        "recipient_email": "peter.van.nieuwenhuijze@asml.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:53:44.248Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 43,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "Hitesh Gupta",
+        "recipient_email": "hitesh.gupta@asml.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:54:32.742Z"
+    }
+},
+{
+    "model": "App.emaillog",
+    "pk": 44,
+    "fields": {
+        "sent_by": 1,
+        "recipient_name": "John Iosifidis",
+        "recipient_email": "john.iosifidis@yahoo.com",
+        "subject": "Innovative Engineering Solutions for Modern Businesses",
+        "status": "Sent",
+        "error_message": null,
+        "sent_at": "2026-07-23T11:58:31.548Z"
+    }
+}
+]
