@@ -314,14 +314,17 @@ def download_template(request):
     file_path = os.path.join(
         settings.BASE_DIR,
         "resources",
-        "Email_Template.xlsx"
+        "mail_details.xlsx"
     )
+    
+    print(file_path)
+    print(os.path.isfile(file_path))
 
     if os.path.isfile(file_path):
         return FileResponse(
             open(file_path, "rb"),
             as_attachment=True,
-            filename="Email_Template.xlsx"
+            filename="mail_details.xlsx"
         )
 
     raise Http404("Template file not found.")
