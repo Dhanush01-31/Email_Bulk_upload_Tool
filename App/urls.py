@@ -21,6 +21,16 @@ urlpatterns = [
         download_template,
         name="download_template",
     ),
+     path(
+        "preview-email/",
+        email_preview,
+        name="email_preview",
+    ),
+     path(
+        "export-logs/",
+        export_email_logs,
+        name="export_email_logs",
+    ),
      
     path('supply_chain/',supply_chain,name='supply_chain')
 ]

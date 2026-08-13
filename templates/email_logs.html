@@ -1,319 +1,243 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Email Logs
+Email Logs | Email Upload Tool
 {% endblock %}
 
 {% block content %}
-
 <div class="container py-4">
-
-    <div class="card shadow border-0">
-
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-
-            <h4 class="mb-0">
-                <i class="bi bi-envelope-check-fill"></i>
-                Email Logs
-            </h4>
-
-            <a href="{% url 'dashboard' %}"
-               class="btn btn-light btn-sm">
-
-                <i class="bi bi-arrow-left"></i>
-                Back to Dashboard
-
-            </a>
-
+    <!-- Header Page Title -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark-slate mb-1">
+                <i class="bi bi-clock-history me-2 text-primary"></i>
+                Detailed Email Dispatch Logs
+            </h3>
+            <p class="text-muted small mb-0">
+                View all previous bulk campaign transmission reports and error stack traces
+            </p>
         </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded-3 px-3 py-2">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
 
-        <div class="card-body">
+    <!-- Filters and Exports Section -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <form method="GET" action="{% url 'email_logs' %}" id="logs-filter-form">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-secondary">Start Date</label>
+                    <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-secondary">End Date</label>
+                    <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-secondary">Delivery Status</label>
+                    <select name="status" class="form-select">
+                        <option value="" {% if not status %}selected{% endif %}>All Statuses</option>
+                        <option value="Sent" {% if status == "Sent" %}selected{% endif %}>Sent Only</option>
+                        <option value="Failed" {% if status == "Failed" %}selected{% endif %}>Failed Only</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-50 rounded-3">
+                        <i class="bi bi-funnel me-1"></i>Filter
+                    </button>
+                    <a href="{% url 'email_logs' %}" class="btn btn-outline-secondary w-50 rounded-3 text-center">
+                        <i class="bi bi-x-lg me-1"></i>Clear
+                    </a>
+                </div>
+            </div>
+            
+            <hr class="my-3 opacity-10">
+            
+            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <div class="text-secondary small">
+                    {% if logs.paginator.count > 0 %}
+                    Found <span class="fw-bold text-dark">{{ logs.paginator.count }}</span> matching records.
+                    {% endif %}
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="exportLogs(false)">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Export Filtered
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="exportLogs(true)">
+                        <i class="bi bi-file-earmark-excel-fill me-1"></i>Export All Records
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 
+    <!-- Logs Card Box -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
             {% if logs %}
-
             <div class="table-responsive">
-
-                <table class="table table-bordered table-hover align-middle">
-
-                    <thead class="table-light">
-
+                <table class="table table-hover align-middle mb-0 text-dark-slate">
+                    <thead class="table-light text-secondary small">
                         <tr>
-
-                            <th>#</th>
-
-                            <th>Recipient Name</th>
-
-                            <th>Recipient Email</th>
-
-                            <th>Subject</th>
-
-                            <th>Status</th>
-
-                            <th>Error Message</th>
-
-                            <th>Sent At</th>
-
+                            <th class="px-4 py-3 text-center" style="width: 60px;">#</th>
+                            <th class="py-3">Recipient Name</th>
+                            <th class="py-3">Recipient Email</th>
+                            <th class="py-3">Campaign Subject</th>
+                            <th class="py-3" style="width: 130px;">Status</th>
+                            <th class="py-3">Error Context</th>
+                            <th class="px-4 py-3 text-end" style="width: 200px;">Dispatched At</th>
                         </tr>
-
                     </thead>
-
                     <tbody>
-
                         {% for log in logs %}
-
                         <tr>
-
-                            <td>
-                                {{ forloop.counter }}
+                            <td class="px-4 text-center text-muted small">
+                                {{ forloop.counter|add:logs.start_index|add:-1 }}
                             </td>
-
-                            <td>
+                            <td class="fw-semibold">
                                 {{ log.recipient_name }}
                             </td>
-
-                            <td>
+                            <td class="text-muted">
                                 {{ log.recipient_email }}
                             </td>
-
                             <td>
                                 {{ log.subject }}
                             </td>
-
                             <td>
-
                                 {% if log.status == "Sent" %}
-
-                                <span class="badge bg-success">
-
-                                    <i class="bi bi-check-circle-fill"></i>
-
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1.5">
+                                    <i class="bi bi-check-circle-fill me-1"></i>
                                     Sent
-
                                 </span>
-
                                 {% else %}
-
-                                <span class="badge bg-danger">
-
-                                    <i class="bi bi-x-circle-fill"></i>
-
+                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1.5">
+                                    <i class="bi bi-exclamation-octagon-fill me-1"></i>
                                     Failed
-
                                 </span>
-
                                 {% endif %}
-
                             </td>
-
-                            <td>
-
+                            <td class="small text-danger">
                                 {% if log.error_message %}
-
-                                    {{ log.error_message }}
-
+                                    <span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ log.error_message }}">
+                                        {{ log.error_message }}
+                                    </span>
                                 {% else %}
-
-                                    -
-
+                                    <span class="text-muted">-</span>
                                 {% endif %}
-
                             </td>
-
-                            <td>
-
+                            <td class="px-4 text-end text-muted small">
                                 {{ log.sent_at|date:"d M Y h:i A" }}
-
                             </td>
-
                         </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination Controls -->
+            {% if logs.has_other_pages %}
+            <div class="card-footer bg-white border-0 py-4">
+                <nav>
+                    <ul class="pagination justify-content-center mb-0 gap-1">
+                        <!-- First & Previous -->
+                        {% if logs.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link rounded-3" href="?page=1&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link rounded-3" href="?page={{ logs.previous_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-3">&laquo;&laquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-3">&laquo;</span>
+                        </li>
+                        {% endif %}
 
+                        <!-- Page Numbers -->
+                        {% for num in logs.paginator.page_range %}
+                            {% if logs.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link rounded-3 px-3.5">{{ num }}</span>
+                            </li>
+                            {% elif num > logs.number|add:'-3' and num < logs.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link rounded-3 px-3.5" href="?page={{ num }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}">{{ num }}</a>
+                            </li>
+                            {% endif %}
                         {% endfor %}
 
-                    </tbody>
-
-                </table>
-
+                        <!-- Next & Last -->
+                        {% if logs.has_next %}
+                        <li class="page-item">
+                            <a class="page-link rounded-3" href="?page={{ logs.next_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link rounded-3" href="?page={{ logs.paginator.num_pages }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-3">&raquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-3">&raquo;&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
             </div>
-            <!-- Pagination -->
-
-{% if logs.has_other_pages %}
-
-<nav class="mt-4">
-
-    <ul class="pagination justify-content-center">
-
-        <!-- Previous -->
-
-        {% if logs.has_previous %}
-
-        <li class="page-item">
-
-            <a class="page-link"
-               href="?page=1">
-
-                First
-
-            </a>
-
-        </li>
-
-        <li class="page-item">
-
-            <a class="page-link"
-               href="?page={{ logs.previous_page_number }}">
-
-                Previous
-
-            </a>
-
-        </li>
-
-        {% else %}
-
-        <li class="page-item disabled">
-
-            <span class="page-link">
-
-                First
-
-            </span>
-
-        </li>
-
-        <li class="page-item disabled">
-
-            <span class="page-link">
-
-                Previous
-
-            </span>
-
-        </li>
-
-        {% endif %}
-
-        <!-- Page Numbers -->
-
-        {% for num in logs.paginator.page_range %}
-
-            {% if logs.number == num %}
-
-                <li class="page-item active">
-
-                    <span class="page-link">
-
-                        {{ num }}
-
-                    </span>
-
-                </li>
-
-            {% elif num > logs.number|add:'-3' and num < logs.number|add:'3' %}
-
-                <li class="page-item">
-
-                    <a class="page-link"
-                       href="?page={{ num }}">
-
-                        {{ num }}
-
-                    </a>
-
-                </li>
-
             {% endif %}
-
-        {% endfor %}
-
-        <!-- Next -->
-
-        {% if logs.has_next %}
-
-        <li class="page-item">
-
-            <a class="page-link"
-               href="?page={{ logs.next_page_number }}">
-
-                Next
-
-            </a>
-
-        </li>
-
-        <li class="page-item">
-
-            <a class="page-link"
-               href="?page={{ logs.paginator.num_pages }}">
-
-                Last
-
-            </a>
-
-        </li>
-
-        {% else %}
-
-        <li class="page-item disabled">
-
-            <span class="page-link">
-
-                Next
-
-            </span>
-
-        </li>
-
-        <li class="page-item disabled">
-
-            <span class="page-link">
-
-                Last
-
-            </span>
-
-        </li>
-
-        {% endif %}
-
-    </ul>
-
-</nav>
-
-{% endif %}
 
             {% else %}
-
+            <!-- Empty Log Placeholder -->
             <div class="text-center py-5">
-
-                <i class="bi bi-inbox display-1 text-secondary"></i>
-
-                <h4 class="mt-3">
-
-                    No Email Logs Found
-
+                <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 80px; height: 80px; background-color: var(--primary-soft) !important;">
+                    <i class="bi bi-inbox text-primary fs-2"></i>
+                </div>
+                <h4 class="fw-bold text-dark-slate mb-1">
+                    No logs found
                 </h4>
-
-                <p class="text-muted">
-
-                    Upload an Excel file and send emails to generate logs.
-
+                <p class="text-muted small mb-4">
+                    Send bulk emails from the campaign wizard tab to record delivery outcomes.
                 </p>
-
-                <a href="{% url 'dashboard' %}"
-                   class="btn btn-primary">
-
-                    Go to Dashboard
-
+                <a href="{% url 'dashboard' %}?tab=campaign" class="btn btn-primary rounded-3 px-4 py-2">
+                    <i class="bi bi-send-plus-fill me-2"></i>Start Campaign
                 </a>
-
             </div>
-
             {% endif %}
-
         </div>
-
     </div>
-
 </div>
 
+<script>
+    function exportLogs(exportAll) {
+        const form = document.getElementById('logs-filter-form');
+        const url = new URL("{% url 'export_email_logs' %}", window.location.origin);
+        
+        if (exportAll) {
+            url.searchParams.set('export_all', 'true');
+        } else {
+            const startDate = form.querySelector('[name="start_date"]').value;
+            const endDate = form.querySelector('[name="end_date"]').value;
+            const status = form.querySelector('[name="status"]').value;
+            
+            if (startDate) url.searchParams.set('start_date', startDate);
+            if (endDate) url.searchParams.set('end_date', endDate);
+            if (status) url.searchParams.set('status', status);
+        }
+        
+        window.location.href = url.toString();
+    }
+</script>
 {% endblock %}

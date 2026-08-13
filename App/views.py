@@ -8,6 +8,8 @@ from django.contrib.auth import authenticate, login, logout,get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils import timezone
+
 
 # --- Email Validation and Paginator
 from django.core.validators import validate_email
@@ -21,7 +23,7 @@ from .tasks import send_bulk_email_task
 # Os 
 import os
 from django.conf import settings
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponse
 
 
 User = get_user_model()
@@ -165,13 +167,27 @@ def logout_view(request):
 
 @login_required(login_url="login")
 def dashboard(request):
+    logs_queryset = EmailLog.objects.filter(sent_by=request.user).order_by("-sent_at")
 
-    logs = EmailLog.objects.filter(
-        sent_by=request.user
-    ).order_by("-sent_at")[:10]
+    # Filters
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+    status = request.GET.get("status")
+
+    if start_date:
+        logs_queryset = logs_queryset.filter(sent_at__date__gte=start_date)
+    if end_date:
+        logs_queryset = logs_queryset.filter(sent_at__date__lte=end_date)
+    if status in ["Sent", "Failed"]:
+        logs_queryset = logs_queryset.filter(status=status)
+
+    # Slice only if no filters are applied, or show up to 50 if filtered
+    if not (start_date or end_date or status):
+        logs = logs_queryset[:10]
+    else:
+        logs = logs_queryset[:50]
 
     context = {
-
         "total_sent": EmailLog.objects.filter(
             sent_by=request.user,
             status="Sent"
@@ -187,7 +203,9 @@ def dashboard(request):
         ).count(),
 
         "logs": logs,
-
+        "start_date": start_date or "",
+        "end_date": end_date or "",
+        "status": status or "",
     }
 
     return render(
@@ -227,15 +245,26 @@ def send_bulk_email_view(request):
         messages.error(request, "Please enter email description.")
         return redirect("dashboard")
 
-    if not email_excel:
-        messages.error(request, "Please upload Excel file.")
-        return redirect("dashboard")
+    excel_csv_data = request.POST.get("excel_csv_data", "").strip()
 
     try:
-        df = pd.read_excel(email_excel)
+        if excel_csv_data:
+            import io
+            df = pd.read_csv(io.StringIO(excel_csv_data))
+        else:
+            if not email_excel:
+                messages.error(request, "Please upload Excel file.")
+                return redirect("dashboard")
 
-    except Exception:
-        messages.error(request, "Unable to read Excel.")
+            if email_excel.name.endswith('.csv'):
+                df = pd.read_csv(email_excel)
+            else:
+                df = pd.read_excel(email_excel)
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        messages.error(request, f"Unable to read file: {str(e)}")
         return redirect("dashboard")
 
     df.columns = df.columns.str.strip().str.lower()
@@ -256,6 +285,9 @@ def send_bulk_email_view(request):
 
         return redirect("dashboard")
 
+    # Replace any NaN/None values from pandas with empty strings
+    df = df.fillna("")
+
     recipients = []
 
     for _, row in df.iterrows():
@@ -263,7 +295,7 @@ def send_bulk_email_view(request):
         name = str(row["name"]).strip()
         email = str(row["email"]).strip()
 
-        if name and email:
+        if name and email and name.lower() != "nan" and email.lower() != "nan":
 
             recipients.append({
                 "name": name,
@@ -295,6 +327,18 @@ def send_bulk_email_view(request):
 def email_logs(request):
     logs_list = EmailLog.objects.all().order_by("-sent_at")
 
+    # Filters
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+    status = request.GET.get("status")
+
+    if start_date:
+        logs_list = logs_list.filter(sent_at__date__gte=start_date)
+    if end_date:
+        logs_list = logs_list.filter(sent_at__date__lte=end_date)
+    if status in ["Sent", "Failed"]:
+        logs_list = logs_list.filter(status=status)
+
     # Show 10 records per page
     paginator = Paginator(logs_list, 10)
 
@@ -306,7 +350,65 @@ def email_logs(request):
 
     return render(request, "email_logs.html", {
         "logs": logs,
+        "start_date": start_date or "",
+        "end_date": end_date or "",
+        "status": status or "",
     })
+
+
+# ----   Export email logs to Excel/CSV view
+@login_required(login_url="login")
+def export_email_logs(request):
+    import csv
+    logs = EmailLog.objects.all().order_by("-sent_at")
+
+    # Filters
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+    status = request.GET.get("status")
+    export_all = request.GET.get("export_all") == "true"
+
+    if not export_all:
+        if start_date:
+            logs = logs.filter(sent_at__date__gte=start_date)
+        if end_date:
+            logs = logs.filter(sent_at__date__lte=end_date)
+        if status in ["Sent", "Failed"]:
+            logs = logs.filter(status=status)
+
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="email_logs.csv"'},
+    )
+    
+    # Write UTF-8 BOM so Excel opens it with correct unicode encoding
+    response.write(b'\xef\xbb\xbf')
+
+    writer = csv.writer(response)
+    writer.writerow([
+        "S.No",
+        "Recipient Name",
+        "Recipient Email",
+        "Subject",
+        "Status",
+        "Error Message",
+        "Sent At",
+    ])
+
+    for i, log in enumerate(logs, 1):
+        local_sent_at = timezone.localtime(log.sent_at) if log.sent_at else None
+        sent_at_str = local_sent_at.strftime("%Y-%m-%d %H:%M:%S") if local_sent_at else ""
+        writer.writerow([
+            i,
+            log.recipient_name,
+            log.recipient_email,
+            log.subject,
+            log.status,
+            log.error_message or "",
+            sent_at_str,
+        ])
+
+    return response
     
 #-----------downlaod Template
     
@@ -328,6 +430,42 @@ def download_template(request):
         )
 
     raise Http404("Template file not found.")
+
+
+
+# ----------- preview email template
+from django.template.loader import render_to_string
+
+@login_required(login_url="login")
+def email_preview(request):
+    if request.method == "POST":
+        template_name = request.POST.get("email_template", "ce")
+        name = request.POST.get("name", "Recipient Name")
+        email = request.POST.get("email", "recipient@example.com")
+        description = request.POST.get("description", "")
+        has_image = request.POST.get("has_image") == "true"
+        
+        if template_name == "ce":
+            template_path = "CE_email_template.html"
+        elif template_name == "functional":
+            template_path = "supply_chain_email.html"
+        elif template_name == "poster":
+            template_path = "poster.html"
+        else:
+            template_path = "CE_email_template.html"
+            
+        html_content = render_to_string(
+            template_path,
+            {
+                "name": name,
+                "email": email,
+                "description": description,
+                "has_image": has_image,
+            },
+        )
+        
+        return HttpResponse(html_content)
+    return HttpResponse("POST request required", status=400)
 
 
 

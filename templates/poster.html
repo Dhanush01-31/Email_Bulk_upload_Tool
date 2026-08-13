@@ -1,0 +1,119 @@
+<h4>Hello <strong>{{ name }}</strong></h4>
+<p>Every efficient supply chain starts with the right strategy.
+At InESS Solutions, we help organizations improve visibility, streamline operations, and drive better supply chain performance. Please find a brief overview attached.
+Let us know if you'd like to discuss your requirements.
+</p>
+<br/>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    background:#f5f5f5;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.wrapper{
+    width:100%;
+    padding:30px 0;
+}
+
+.container{
+    width:650px;
+    margin:auto;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.header{
+    background:#0d6efd;
+    color:#fff;
+    text-align:center;
+    padding:20px;
+}
+
+.poster{
+
+    text-align:center;
+    padding:20px;
+}
+
+.poster img{
+
+    width:100%;
+    max-width:600px;
+    border-radius:8px;
+}
+
+.caption{
+
+    padding:20px 30px;
+    font-size:16px;
+    line-height:1.8;
+    color:#444;
+    white-space:pre-line;
+}
+
+.footer{
+
+    text-align:center;
+    background:#f8f9fa;
+    padding:18px;
+    font-size:13px;
+    color:#777;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="container">
+
+<div class="header">
+
+<h2>InESS Solutions</h2>
+
+</div>
+
+<div class="poster">
+
+{% if has_image %}
+
+<img src="cid:description_image">
+
+{% endif %}
+
+</div>
+
+<div class="caption">
+
+{{ description }}
+
+</div>
+
+<div class="footer">
+
+Regards,<br>
+
+<strong>InESS Solutions</strong>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

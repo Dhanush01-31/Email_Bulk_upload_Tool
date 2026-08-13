@@ -1,7 +1,6 @@
 {% load static %}
 <h4>Hello <strong>{{ name }}</strong></h4>
 
-<h5>{{ description|linebreaksbr }}</h5>
 
 {% if has_image %}
 <center>
@@ -16,6 +15,8 @@
                border-radius:8px;">
 </center>
 {% endif %}
+
+<p>{{ description|linebreaksbr }}</p>
 
 
 <br/>

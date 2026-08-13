@@ -1,8 +1,11 @@
 from email.mime.image import MIMEImage
+
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 from django.conf import settings
+
 from .models import EmailLog
+
 
 def send_bulk_email_task(
     subject,
@@ -11,6 +14,7 @@ def send_bulk_email_task(
     user,
     description_image=None,
     attachments=None,
+    email_template=None,
 ):
 
     connection = get_connection()
@@ -40,15 +44,30 @@ def send_bulk_email_task(
 
         for recipient in recipients:
 
-            html_content = render_to_string(
-                "supply_chain_email.html",
-                {
-                    "name": recipient["name"],
-                    "email": recipient["email"],
-                    "description": description,
-                    "has_image": bool(image_bytes),
-                },
-            )
+            # Select Template
+            if email_template == "ce":
+
+                html_content = render_to_string(
+                    "CE_email_template.html",
+                    {
+                        "name": recipient["name"],
+                        "email": recipient["email"],
+                        "description": description,
+                        "has_image": bool(image_bytes),
+                    },
+                )
+
+            else:
+
+                html_content = render_to_string(
+                    "supply_chain_email.html",
+                    {
+                        "name": recipient["name"],
+                        "email": recipient["email"],
+                        "description": description,
+                        "has_image": bool(image_bytes),
+                    },
+                )
 
             text_content = f"""
 Hello {recipient['name']} Sir/Mam,
