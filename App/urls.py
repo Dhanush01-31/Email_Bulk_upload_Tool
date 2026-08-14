@@ -31,6 +31,10 @@ urlpatterns = [
         export_email_logs,
         name="export_email_logs",
     ),
-     
+     path(
+         "dashboard/campaign-status/",
+         campaign_status,
+         name="campaign_status",
+     ),
     path('supply_chain/',supply_chain,name='supply_chain')
 ]

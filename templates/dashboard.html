@@ -914,13 +914,23 @@ Dashboard | Email Upload Tool
     style="background: rgba(15, 23, 42, 0.85); z-index: 9999; backdrop-filter: blur(4px);">
     <div class="d-flex flex-column justify-content-center align-items-center h-100 text-white">
         <div class="spinner-border text-primary mb-4" style="width: 5rem; height: 5rem;" role="status"></div>
-        <h3 class="fw-bold">Executing Campaign dispatch...</h3>
-        <p class="text-muted px-4 text-center max-w-sm" style="max-width: 450px;">
+        <h3 id="sendingLoaderTitle" class="fw-bold">Executing Campaign dispatch...</h3>
+        <p id="sendingLoaderDesc" class="text-muted px-4 text-center max-w-sm" style="max-width: 450px;">
             Personalizing layouts and executing safe SMTP transmissions. Please do not close or reload this page until
             completion.
         </p>
+        <div id="campaignProgressContainer" class="w-100 mt-3 px-4 d-none" style="max-width: 450px;">
+            <div class="progress bg-secondary rounded-pill" style="height: 10px;">
+                <div id="campaignProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success rounded-pill" role="progressbar" style="width: 0%;"></div>
+            </div>
+            <div class="d-flex justify-content-between mt-2 text-muted small">
+                <span id="campaignProgressText">0 / 0 sent</span>
+                <span id="campaignProgressPercent">0%</span>
+            </div>
+        </div>
     </div>
 </div>
+
 
 <!-- JAVASCRIPT APP LOGIC FOR WIZARD FLOW -->
 <script>
@@ -1497,6 +1507,8 @@ Dashboard | Email Upload Tool
     document.getElementById('wizardCampaignForm').addEventListener('submit', function () {
         document.getElementById('wizard-submit-btn').disabled = true;
         document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
+        document.getElementById('sendingLoaderTitle').innerText = "Initiating Campaign...";
+        document.getElementById('sendingLoaderDesc').innerText = "Please wait while we prepare the SMTP transmission. Do not reload page.";
     });
 
     // Export dashboard logs to CSV/Excel
@@ -1517,5 +1529,68 @@ Dashboard | Email Upload Tool
 
         window.location.href = url.toString();
     }
+
+    // Polling campaign status API
+    let campaignPollIntervalId = null;
+
+    function startPollingCampaignStatus() {
+        const overlay = document.getElementById('sendingLoaderOverlay');
+        const titleEl = document.getElementById('sendingLoaderTitle');
+        const descEl = document.getElementById('sendingLoaderDesc');
+        const progressContainer = document.getElementById('campaignProgressContainer');
+        const progressBar = document.getElementById('campaignProgressBar');
+        const progressText = document.getElementById('campaignProgressText');
+        const progressPercent = document.getElementById('campaignProgressPercent');
+
+        if (overlay) overlay.classList.remove('d-none');
+        if (progressContainer) progressContainer.classList.remove('d-none');
+        if (titleEl) titleEl.innerText = "Sending Emails...";
+        if (descEl) descEl.innerText = "Mails are sending, please don't refresh or close this page.";
+
+        if (campaignPollIntervalId) {
+            clearInterval(campaignPollIntervalId);
+        }
+
+        campaignPollIntervalId = setInterval(() => {
+            fetch("{% url 'campaign_status' %}")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.active) {
+                        if (overlay) overlay.classList.remove('d-none');
+                        if (progressContainer) progressContainer.classList.remove('d-none');
+                        
+                        if (titleEl) titleEl.innerText = "Sending Emails...";
+                        if (descEl) descEl.innerText = `Campaign "${data.subject}" is being dispatched. Please don't refresh this page.`;
+                        
+                        if (progressBar) progressBar.style.width = data.progress_percent + '%';
+                        if (progressText) progressText.innerText = `${data.sent_count} / ${data.total_emails} sent`;
+                        if (progressPercent) progressPercent.innerText = `${data.progress_percent}%`;
+                    } else {
+                        clearInterval(campaignPollIntervalId);
+                        if (overlay) overlay.classList.add('d-none');
+
+                        if (data.status === 'Completed') {
+                            window.location.reload();
+                        } else if (data.status === 'Failed') {
+                            alert("Campaign dispatch failed: " + (data.error_message || "Unknown error"));
+                            window.location.reload();
+                        } else {
+                            if (data.status) {
+                                window.location.reload();
+                            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("Error polling campaign status:", err);
+                });
+        }, 2000);
+    }
+
+    {% if active_task %}
+    document.addEventListener("DOMContentLoaded", function() {
+        startPollingCampaignStatus();
+    });
+    {% endif %}
 </script>
 {% endblock %}

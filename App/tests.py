@@ -1,11 +1,11 @@
-from django.test import TestCase, Client
+from django.test import TransactionTestCase, Client
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .models import EmailLog
+from .models import EmailLog, BulkSendTask
 import csv
 import io
 
-class EmailLogExportTest(TestCase):
+class EmailLogExportTest(TransactionTestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username="testuser", password="password123")
@@ -69,6 +69,14 @@ class EmailLogExportTest(TestCase):
         # Check that it redirected to dashboard
         self.assertEqual(response.status_code, 302)
         
+        # Wait for the background task to complete (up to 5 seconds)
+        import time
+        for _ in range(50):
+            task = BulkSendTask.objects.filter(subject="Test CSV Upload").first()
+            if task and task.status in ["Completed", "Failed"]:
+                break
+            time.sleep(0.1)
+
         # Check that only 1 EmailLog record was created (for John Doe)
         logs = EmailLog.objects.filter(subject="Test CSV Upload")
         self.assertEqual(logs.count(), 1)
