@@ -16,6 +16,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 
+
 # Models and tasks
 from .models import EmailLog
 from .tasks import send_bulk_email_task
