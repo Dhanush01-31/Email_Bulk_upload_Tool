@@ -551,7 +551,7 @@ Dashboard | Email Upload Tool
 
                         <div class="row g-4 justify-content-center">
                             <!-- Template 1: CE -->
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-ce"
                                     onclick="selectCampaignTemplate('ce')">
                                     <div class="text-center">
@@ -567,7 +567,7 @@ Dashboard | Email Upload Tool
                             </div>
 
                             <!-- Template 2: SupplyChain -->
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-functional"
                                     onclick="selectCampaignTemplate('functional')">
                                     <div class="text-center">
@@ -583,7 +583,7 @@ Dashboard | Email Upload Tool
                             </div>
 
                             <!-- Template 3: Poster -->
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-poster"
                                     onclick="selectCampaignTemplate('poster')">
                                     <div class="text-center">
@@ -594,6 +594,21 @@ Dashboard | Email Upload Tool
                                         <h5 class="fw-bold mb-2">Poster Template</h5>
                                         <p class="text-muted small mb-0">Minimal poster frame wrapper. Centered card
                                             focusing on inline graphics.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 4: CE_supplychainposter -->
+                            <div class="col-md-3">
+                                <div class="card h-100 template-card p-4 border-2" id="tcard-CE_supplychainposter"
+                                    onclick="selectCampaignTemplate('CE_supplychainposter')">
+                                    <div class="text-center">
+                                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3"
+                                            style="width: 60px; height: 60px; color: #8b5cf6; background-color: rgba(139, 92, 246, 0.08) !important;">
+                                            <i class="bi bi-file-earmark-post fs-3"></i>
+                                        </div>
+                                        <h5 class="fw-bold mb-2">CE Supply Chain Poster</h5>
+                                        <p class="text-muted small mb-0">Combined Engineering Advisory and Supply Chain design with integrated poster presentation.</p>
                                     </div>
                                 </div>
                             </div>
@@ -914,20 +929,11 @@ Dashboard | Email Upload Tool
     style="background: rgba(15, 23, 42, 0.85); z-index: 9999; backdrop-filter: blur(4px);">
     <div class="d-flex flex-column justify-content-center align-items-center h-100 text-white">
         <div class="spinner-border text-primary mb-4" style="width: 5rem; height: 5rem;" role="status"></div>
-        <h3 id="sendingLoaderTitle" class="fw-bold">Executing Campaign dispatch...</h3>
-        <p id="sendingLoaderDesc" class="text-muted px-4 text-center max-w-sm" style="max-width: 450px;">
+        <h3 class="fw-bold">Executing Campaign dispatch...</h3>
+        <p class="text-muted px-4 text-center max-w-sm" style="max-width: 450px;">
             Personalizing layouts and executing safe SMTP transmissions. Please do not close or reload this page until
             completion.
         </p>
-        <div id="campaignProgressContainer" class="w-100 mt-3 px-4 d-none" style="max-width: 450px;">
-            <div class="progress bg-secondary rounded-pill" style="height: 10px;">
-                <div id="campaignProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success rounded-pill" role="progressbar" style="width: 0%;"></div>
-            </div>
-            <div class="d-flex justify-content-between mt-2 text-muted small">
-                <span id="campaignProgressText">0 / 0 sent</span>
-                <span id="campaignProgressPercent">0%</span>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -1015,8 +1021,22 @@ Dashboard | Email Upload Tool
         // Clean subject UI
         updateSubjectCounter();
 
+        // Hide all panes except pane-1
+        document.querySelectorAll('.wizard-step-pane').forEach(pane => {
+            pane.style.display = 'none';
+        });
+        document.getElementById('pane-1').style.display = 'block';
+
+        // Reset navigation buttons states
+        document.getElementById('wizard-prev-btn').disabled = true;
+        document.getElementById('wizard-next-btn').classList.remove('d-none');
+        document.getElementById('wizard-submit-btn').classList.add('d-none');
+
         // Refresh Steps UI representation
         updateWizardStepUI();
+
+        // Refresh buttons disable status
+        validateStepProgression();
     }
 
     // Handle loading template loader animation (Step 2)
@@ -1491,6 +1511,7 @@ Dashboard | Email Upload Tool
         let templateName = "CE Template";
         if (selectedTemplate === 'functional') templateName = "SupplyChain Template";
         if (selectedTemplate === 'poster') templateName = "Poster Template";
+        if (selectedTemplate === 'CE_supplychainposter') templateName = "CE Supply Chain Poster";
 
         document.getElementById('summary-template').innerText = templateName;
         document.getElementById('summary-subject').innerText = document.getElementById('subject-input').value;
@@ -1507,8 +1528,6 @@ Dashboard | Email Upload Tool
     document.getElementById('wizardCampaignForm').addEventListener('submit', function () {
         document.getElementById('wizard-submit-btn').disabled = true;
         document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
-        document.getElementById('sendingLoaderTitle').innerText = "Initiating Campaign...";
-        document.getElementById('sendingLoaderDesc').innerText = "Please wait while we prepare the SMTP transmission. Do not reload page.";
     });
 
     // Export dashboard logs to CSV/Excel
@@ -1529,68 +1548,5 @@ Dashboard | Email Upload Tool
 
         window.location.href = url.toString();
     }
-
-    // Polling campaign status API
-    let campaignPollIntervalId = null;
-
-    function startPollingCampaignStatus() {
-        const overlay = document.getElementById('sendingLoaderOverlay');
-        const titleEl = document.getElementById('sendingLoaderTitle');
-        const descEl = document.getElementById('sendingLoaderDesc');
-        const progressContainer = document.getElementById('campaignProgressContainer');
-        const progressBar = document.getElementById('campaignProgressBar');
-        const progressText = document.getElementById('campaignProgressText');
-        const progressPercent = document.getElementById('campaignProgressPercent');
-
-        if (overlay) overlay.classList.remove('d-none');
-        if (progressContainer) progressContainer.classList.remove('d-none');
-        if (titleEl) titleEl.innerText = "Sending Emails...";
-        if (descEl) descEl.innerText = "Mails are sending, please don't refresh or close this page.";
-
-        if (campaignPollIntervalId) {
-            clearInterval(campaignPollIntervalId);
-        }
-
-        campaignPollIntervalId = setInterval(() => {
-            fetch("{% url 'campaign_status' %}")
-                .then(res => res.json())
-                .then(data => {
-                    if (data.active) {
-                        if (overlay) overlay.classList.remove('d-none');
-                        if (progressContainer) progressContainer.classList.remove('d-none');
-                        
-                        if (titleEl) titleEl.innerText = "Sending Emails...";
-                        if (descEl) descEl.innerText = `Campaign "${data.subject}" is being dispatched. Please don't refresh this page.`;
-                        
-                        if (progressBar) progressBar.style.width = data.progress_percent + '%';
-                        if (progressText) progressText.innerText = `${data.sent_count} / ${data.total_emails} sent`;
-                        if (progressPercent) progressPercent.innerText = `${data.progress_percent}%`;
-                    } else {
-                        clearInterval(campaignPollIntervalId);
-                        if (overlay) overlay.classList.add('d-none');
-
-                        if (data.status === 'Completed') {
-                            window.location.reload();
-                        } else if (data.status === 'Failed') {
-                            alert("Campaign dispatch failed: " + (data.error_message || "Unknown error"));
-                            window.location.reload();
-                        } else {
-                            if (data.status) {
-                                window.location.reload();
-                            }
-                        }
-                    }
-                })
-                .catch(err => {
-                    console.error("Error polling campaign status:", err);
-                });
-        }, 2000);
-    }
-
-    {% if active_task %}
-    document.addEventListener("DOMContentLoaded", function() {
-        startPollingCampaignStatus();
-    });
-    {% endif %}
 </script>
 {% endblock %}

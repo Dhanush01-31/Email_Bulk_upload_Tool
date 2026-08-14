@@ -18,11 +18,8 @@ from django.core.paginator import Paginator
 
 
 # Models and tasks
-from .models import EmailLog, BulkSendTask
+from .models import EmailLog
 from .tasks import send_bulk_email_task
-import threading
-from django.http import JsonResponse
-from datetime import timedelta
 
 # Os 
 import os
@@ -191,22 +188,6 @@ def dashboard(request):
     else:
         logs = logs_queryset[:50]
 
-    # Clear stale tasks (older than 30 minutes in Running status)
-    stale_tasks = BulkSendTask.objects.filter(
-        status="Running",
-        updated_at__lt=timezone.now() - timedelta(minutes=30)
-    )
-    if stale_tasks.exists():
-        stale_tasks.update(
-            status="Failed",
-            error_message="Task timed out after 30 minutes of inactivity."
-        )
-
-    active_task = BulkSendTask.objects.filter(
-        user=request.user,
-        status="Running"
-    ).first()
-
     context = {
         "total_sent": EmailLog.objects.filter(
             sent_by=request.user,
@@ -226,7 +207,6 @@ def dashboard(request):
         "start_date": start_date or "",
         "end_date": end_date or "",
         "status": status or "",
-        "active_task": active_task,
     }
 
     return render(
@@ -328,60 +308,17 @@ def send_bulk_email_view(request):
         messages.error(request, "No valid recipients found.")
         return redirect("dashboard")
 
-    # Pre-read files for background thread safety
-    description_image_data = None
-    if description_image:
-        description_image_data = {
-            "name": description_image.name,
-            "bytes": description_image.read(),
-        }
-
-    attachments_data = []
-    if attachments:
-        for file in attachments:
-            attachments_data.append({
-                "name": file.name,
-                "bytes": file.read(),
-                "content_type": file.content_type,
-            })
-
-    # Create the background task object
-    task = BulkSendTask.objects.create(
-        user=request.user,
+    send_bulk_email_task(
         subject=subject,
-        total_emails=len(recipients),
-        sent_count=0,
-        status="Running",
+        description=description,
+        recipients=recipients,
+        user=request.user,
+        description_image=description_image,
+        attachments=attachments,
+        email_template=email_template,
     )
 
-    # Spawn thread to run campaign
-    user_id = request.user.id
-    def thread_target():
-        from django.db import close_old_connections
-        from django.contrib.auth import get_user_model
-        close_old_connections()
-        User = get_user_model()
-        try:
-            user = User.objects.get(id=user_id)
-            task_instance = BulkSendTask.objects.get(id=task.id)
-            send_bulk_email_task(
-                subject=subject,
-                description=description,
-                recipients=recipients,
-                user=user,
-                description_image=description_image_data,
-                attachments=attachments_data,
-                email_template=email_template,
-                task=task_instance,
-            )
-        except Exception as e:
-            print(f"Error in background email task thread: {e}")
-        finally:
-            close_old_connections()
-
-    threading.Thread(target=thread_target, daemon=True).start()
-
-    messages.success(request, "Email campaign dispatch started in background. You can track progress below.")
+    messages.success(request, "Emails sent successfully.")
 
     return redirect("dashboard")
 
@@ -515,6 +452,8 @@ def email_preview(request):
             template_path = "supply_chain_email.html"
         elif template_name == "poster":
             template_path = "poster.html"
+        elif template_name == "CE_supplychainposter":
+            template_path = "CE_supplychainposter.html"
         else:
             template_path = "CE_email_template.html"
             
@@ -545,36 +484,4 @@ def custom_500(request):
 def supply_chain(request):
     return render(request,'supply_chain_email.html')
 
-
-@login_required(login_url="login")
-def campaign_status(request):
-    task = BulkSendTask.objects.filter(
-        user=request.user,
-        status="Running"
-    ).first()
-    
-    if task:
-        return JsonResponse({
-            "active": True,
-            "task_id": task.id,
-            "subject": task.subject,
-            "total_emails": task.total_emails,
-            "sent_count": task.sent_count,
-            "status": task.status,
-            "progress_percent": int((task.sent_count / task.total_emails) * 100) if task.total_emails > 0 else 0,
-        })
-    else:
-        recent_task = BulkSendTask.objects.filter(
-            user=request.user,
-        ).order_by("-updated_at").first()
-        
-        if recent_task and (timezone.now() - recent_task.updated_at).total_seconds() < 10:
-            return JsonResponse({
-                "active": False,
-                "status": recent_task.status,
-                "error_message": recent_task.error_message,
-                "total_emails": recent_task.total_emails,
-                "sent_count": recent_task.sent_count,
-            })
-            
-        return JsonResponse({"active": False})
+
