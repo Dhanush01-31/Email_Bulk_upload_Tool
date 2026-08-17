@@ -117,7 +117,10 @@ InESS Consulting
             # -------------------------------
             # Create Email
             # -------------------------------
-            CC_EMAILS = ["srinithin@inessconsulting.com"]
+            if settings.SERVER_TYPE == "DEV":
+                CC_EMAILS = ["dhanusharumugam@inessconsulting.com"]
+            else:
+                CC_EMAILS = ["srinithin@inessconsulting.com"]
 
             email = EmailMultiAlternatives(
                 subject=subject,

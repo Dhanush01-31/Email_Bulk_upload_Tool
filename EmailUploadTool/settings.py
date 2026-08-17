@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import urllib.parse
 from pathlib import Path
 from decouple import config
 
@@ -26,11 +26,10 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-]
+ALLOWED_HOSTS = [host.strip() for host in config('ALLOWED_HOST',"").split(",") if host.strip() ]
 
+# server Type
+SERVER_TYPE = config('SERVER_TYPE')
 
 # Application definition
 
@@ -41,12 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    # Installed Apps
     'App',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,17 +77,32 @@ WSGI_APPLICATION = 'EmailUploadTool.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
+if SERVER_TYPE == "PRODUCTION":
+    url = urllib.parse.urlparse(config('DATABASE_URL'))
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": url.path.lstrip("/"),
+            "USER": url.username,
+            "PASSWORD": url.password,
+            "HOST": url.hostname,
+            "PORT": url.port,
+            "OPTIONS": {
+                "sslmode": "require",
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSWORD"),
+            "HOST": config("DB_HOST"),
+            "PORT": config("DB_PORT"),
+        }
+    }
 
 
 # Password validation
@@ -155,6 +170,15 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
+
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 # # Celery Configuration
 
 # CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
@@ -170,5 +194,5 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 # CELERY_TIMEZONE = "Asia/Kolkata"
 
 # Upload limits configuration
-DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
+# DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
+# FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
