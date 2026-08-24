@@ -18,6 +18,8 @@ def send_bulk_email_task(
 ):
 
     connection = get_connection()
+    
+    # dev branch
 
     try:
 
@@ -117,7 +119,7 @@ InESS Consulting
             # -------------------------------
             # Create Email
             # -------------------------------
-            if settings.SERVER_TYPE == "DEV":
+            if settings.SERVER_TYPE == "DEV" or settings.SERVER_TYPE == 'DEMO':
                 CC_EMAILS = ["dhanusharumugam@inessconsulting.com"]
             else:
                 CC_EMAILS = ["srinithin@inessconsulting.com"]
