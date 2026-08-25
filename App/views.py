@@ -11,6 +11,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils import timezone
 
 
+
 # --- Email Validation and Paginator
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -484,4 +485,4 @@ def custom_500(request):
 def supply_chain(request):
     return render(request,'supply_chain_email.html')
 
-
+
