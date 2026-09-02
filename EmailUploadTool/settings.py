@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = [host.strip() for host in config('ALLOWED_HOST',"").split(",") if host.strip() ]
+ALLOWED_HOSTS = [host.strip() for host in config("ALLOWED_HOST").split(",") if host.strip()]
 
 # server Type
 SERVER_TYPE = config('SERVER_TYPE')
@@ -161,13 +161,13 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = config("EMAIL_HOST")
 
-EMAIL_PORT = config("EMAIL_PORT", cast=int)
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
 
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
