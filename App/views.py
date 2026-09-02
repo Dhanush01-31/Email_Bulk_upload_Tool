@@ -484,4 +484,4 @@ def custom_500(request):
 def supply_chain(request):
     return render(request,'supply_chain_email.html')
 
-
+
