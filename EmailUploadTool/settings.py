@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import urllib.parse
+import sys
 from pathlib import Path
 from decouple import config
 
@@ -196,3 +197,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Upload limits configuration
 DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
+
+# Use in-memory SQLite for running tests to prevent remote DB locks
+if 'pytest' in sys.modules or 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
