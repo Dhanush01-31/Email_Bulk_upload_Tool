@@ -195,11 +195,11 @@ Dashboard | Email Upload Tool
             Menu
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#" onclick="showSection('overview')"><i
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('overview', event)"><i
                         class="bi bi-grid-fill me-2"></i>Overview</a></li>
-            <li><a class="dropdown-item" href="#" onclick="showSection('campaign')"><i
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('campaign', event)"><i
                         class="bi bi-send-plus-fill me-2"></i>New Campaign</a></li>
-            <li><a class="dropdown-item" href="#" onclick="showSection('logs')"><i
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('logs', event)"><i
                         class="bi bi-clock-history me-2"></i>Campaign Logs</a></li>
             <li>
                 <hr class="dropdown-divider">
@@ -220,17 +220,17 @@ Dashboard | Email Upload Tool
                 <div class="fw-bold mt-1 text-truncate">{{ user.username }}</div>
             </div>
 
-            <a href="#" id="link-overview" class="sidebar-link active" onclick="showSection('overview')">
+            <a href="javascript:void(0)" id="link-overview" class="sidebar-link active" onclick="showSection('overview', event)">
                 <i class="bi bi-grid-fill"></i>
                 Overview
             </a>
 
-            <a href="#" id="link-campaign" class="sidebar-link" onclick="showSection('campaign')">
+            <a href="javascript:void(0)" id="link-campaign" class="sidebar-link" onclick="showSection('campaign', event)">
                 <i class="bi bi-send-plus-fill"></i>
                 New Campaign
             </a>
 
-            <a href="#" id="link-logs" class="sidebar-link" onclick="showSection('logs')">
+            <a href="javascript:void(0)" id="link-logs" class="sidebar-link" onclick="showSection('logs', event)">
                 <i class="bi bi-clock-history"></i>
                 Campaign Logs
             </a>
@@ -261,7 +261,7 @@ Dashboard | Email Upload Tool
                     <h3 class="fw-bold text-dark-slate mb-1">Overview Dashboard</h3>
                     <p class="text-muted small mb-0">Monitor and orchestrate your bulk mail dispatch list</p>
                 </div>
-                <button class="btn btn-primary rounded-3 px-3 py-2" onclick="showSection('campaign')">
+                <button class="btn btn-primary rounded-3 px-3 py-2" onclick="showSection('campaign', event)">
                     <i class="bi bi-plus-lg me-2"></i>New Campaign
                 </button>
             </div>
@@ -319,7 +319,7 @@ Dashboard | Email Upload Tool
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                     <h5 class="fw-bold mb-0 text-dark-slate">Recent Campaign Logs</h5>
                     <button class="btn btn-outline-secondary btn-sm rounded-2 text-decoration-none"
-                        onclick="showSection('logs')">View All</button>
+                        onclick="showSection('logs', event)">View All</button>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0 text-dark-slate">
@@ -915,16 +915,22 @@ Dashboard | Email Upload Tool
     </div>
 </div>
 
-<!-- Sending Overlay spinner -->
+<!-- Sending Overlay spinner & progress -->
 <div id="sendingLoaderOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none"
-    style="background: rgba(15, 23, 42, 0.85); z-index: 9999; backdrop-filter: blur(4px);">
+    style="background: rgba(15, 23, 42, 0.9); z-index: 9999; backdrop-filter: blur(6px);">
     <div class="d-flex flex-column justify-content-center align-items-center h-100 text-white">
-        <div class="spinner-border text-primary mb-4" style="width: 5rem; height: 5rem;" role="status"></div>
-        <h3 class="fw-bold">Executing Campaign dispatch...</h3>
-        <p class="text-muted px-4 text-center max-w-sm" style="max-width: 450px;">
-            Personalizing layouts and executing safe SMTP transmissions. Please do not close or reload this page until
-            completion.
+        <div class="spinner-border text-primary mb-4" id="sending-overlay-spinner" style="width: 4.5rem; height: 4.5rem;" role="status"></div>
+        <div id="sending-overlay-success-icon" class="text-success mb-3 d-none">
+            <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+        </div>
+        <h3 class="fw-bold" id="sending-overlay-title">Executing Campaign dispatch...</h3>
+        <p class="text-white-50 px-4 text-center mb-3" id="sending-overlay-desc" style="max-width: 480px;">
+            Personalizing layouts and executing safe SMTP transmissions. Please do not close or reload this page.
         </p>
+        <div class="progress w-50 my-2" id="sending-overlay-progress-container" style="height: 12px; max-width: 450px; background-color: rgba(255,255,255,0.15);">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="sending-overlay-progress-bar" style="width: 0%;"></div>
+        </div>
+        <small class="text-white-50 mt-1" id="sending-overlay-counter">0 / 0 Contacts Processed</small>
     </div>
 </div>
 
@@ -932,18 +938,44 @@ Dashboard | Email Upload Tool
 <!-- JAVASCRIPT APP LOGIC FOR WIZARD FLOW -->
 <script>
     // Tab toggling
-    function showSection(sectionId) {
-        document.querySelectorAll('.db-section').forEach(s => s.style.display = 'none');
-        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    function showSection(sectionId, event) {
+        if (event) {
+            try {
+                event.preventDefault();
+                event.stopPropagation();
+            } catch (e) {}
+        }
 
-        document.getElementById('section-' + sectionId).style.display = 'block';
+        const validSections = ['overview', 'campaign', 'logs'];
+        if (!validSections.includes(sectionId)) {
+            sectionId = 'overview';
+        }
+
+        document.querySelectorAll('.db-section').forEach(s => {
+            s.style.display = 'none';
+        });
+        document.querySelectorAll('.sidebar-link').forEach(l => {
+            l.classList.remove('active');
+        });
+
+        const targetSection = document.getElementById('section-' + sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+        }
+
         const activeLink = document.getElementById('link-' + sectionId);
-        if (activeLink) activeLink.classList.add('active');
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
 
-        // Sync URL query tab parameter without reloading
-        const url = new URL(window.location);
-        url.searchParams.set('tab', sectionId);
-        window.history.pushState({}, '', url);
+        // Sync URL query tab parameter safely without breaking
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', sectionId);
+            window.history.pushState({ tab: sectionId }, '', url.toString());
+        } catch (err) {
+            console.warn("Could not push state to history:", err);
+        }
     }
 
     // Auto toggle tab from query param if active
@@ -951,6 +983,12 @@ Dashboard | Email Upload Tool
         const params = new URLSearchParams(window.location.search);
         const activeTab = params.get('tab') || 'overview';
         showSection(activeTab);
+    });
+
+    window.addEventListener('popstate', function (e) {
+        const params = new URLSearchParams(window.location.search);
+        const tab = (e.state && e.state.tab) || params.get('tab') || 'overview';
+        showSection(tab);
     });
 
     // Wizard Variables
@@ -1504,10 +1542,110 @@ Dashboard | Email Upload Tool
         document.getElementById('summary-attachments').innerText = filesCount + ' Files';
     }
 
-    // Handle final form sending overlays
-    document.getElementById('wizardCampaignForm').addEventListener('submit', function () {
-        document.getElementById('wizard-submit-btn').disabled = true;
-        document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
+    // Handle final form sending overlays with chunked batch sending (Vercel & Local compatible)
+    document.getElementById('wizardCampaignForm').addEventListener('submit', async function (e) {
+        if (excelContacts && excelContacts.length > 0) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('wizard-submit-btn');
+            submitBtn.disabled = true;
+
+            const overlay = document.getElementById('sendingLoaderOverlay');
+            overlay.classList.remove('d-none');
+
+            const spinner = document.getElementById('sending-overlay-spinner');
+            const successIcon = document.getElementById('sending-overlay-success-icon');
+            const progressBar = document.getElementById('sending-overlay-progress-bar');
+            const overlayTitle = document.getElementById('sending-overlay-title');
+            const overlayDesc = document.getElementById('sending-overlay-desc');
+            const counterText = document.getElementById('sending-overlay-counter');
+
+            const total = excelContacts.length;
+            const batchSize = 10; // 10 recipients per batch guarantees requests complete well within Vercel's 10-second timeout
+            let processed = 0;
+            let hasError = false;
+
+            const subject = document.getElementById('subject-input').value;
+            const description = document.getElementById('description-textarea').value;
+            const template = selectedTemplate || 'ce';
+            const imgInput = document.getElementById('image-file-input');
+            const attachInput = document.getElementById('attachments-file-input');
+
+            for (let i = 0; i < total; i += batchSize) {
+                const batch = excelContacts.slice(i, i + batchSize);
+                const batchNum = Math.floor(i / batchSize) + 1;
+                const totalBatches = Math.ceil(total / batchSize);
+
+                overlayTitle.innerText = `Sending Batch ${batchNum} of ${totalBatches}...`;
+                overlayDesc.innerText = `Dispatching emails safely via SMTP. Please do not close this window.`;
+                counterText.innerText = `${processed} / ${total} Contacts Processed`;
+
+                const formData = new FormData();
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                formData.append('subject', subject);
+                formData.append('description', description);
+                formData.append('email_template', template);
+                formData.append('recipients', JSON.stringify(batch));
+
+                if (imgInput.files && imgInput.files[0]) {
+                    formData.append('description_image', imgInput.files[0]);
+                }
+                if (attachInput.files) {
+                    for (let j = 0; j < attachInput.files.length; j++) {
+                        formData.append('attachments', attachInput.files[j]);
+                    }
+                }
+
+                try {
+                    const response = await fetch("{% url 'send_batch_email' %}", {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    let data;
+                    const responseText = await response.text();
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (parseErr) {
+                        throw new Error(`Server error (${response.status}): Unexpected response received.`);
+                    }
+
+                    if (!response.ok || data.status === 'error') {
+                        throw new Error(data.message || data.error || 'Server error occurred during dispatch');
+                    }
+
+                    processed += batch.length;
+                    const percent = Math.min(100, Math.round((processed / total) * 100));
+                    progressBar.style.width = percent + '%';
+                    counterText.innerText = `${processed} / ${total} Contacts Processed`;
+                } catch (err) {
+                    console.error("Batch sending error:", err);
+                    hasError = true;
+                    overlayTitle.innerText = "Error During Dispatch";
+                    overlayDesc.innerText = err.message || "Failed while sending email batch. Checking campaign logs...";
+                    await new Promise(r => setTimeout(r, 2500));
+                    break;
+                }
+            }
+
+            if (!hasError) {
+                spinner.classList.add('d-none');
+                successIcon.classList.remove('d-none');
+                overlayTitle.innerText = "All Emails Dispatched Successfully!";
+                overlayDesc.innerText = `Successfully processed ${processed} of ${total} recipients. Redirecting to logs...`;
+                progressBar.style.width = '100%';
+                progressBar.classList.remove('progress-bar-animated');
+                counterText.innerText = `${total} / ${total} Contacts Completed`;
+            }
+
+            setTimeout(() => {
+                window.location.href = "{% url 'dashboard' %}?tab=logs";
+            }, 1800);
+        } else {
+            // Fallback to normal form submit if excel was uploaded directly without parsing
+            document.getElementById('wizard-submit-btn').disabled = true;
+            document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
+        }
     });
 
     // Export dashboard logs to CSV/Excel
