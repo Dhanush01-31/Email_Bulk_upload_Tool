@@ -84,6 +84,7 @@ Email Logs | Email Upload Tool
                             <th class="py-3">Recipient Name</th>
                             <th class="py-3">Recipient Email</th>
                             <th class="py-3">Campaign Subject</th>
+                            <th class="py-3">Template</th>
                             <th class="py-3" style="width: 130px;">Status</th>
                             <th class="py-3">Error Context</th>
                             <th class="px-4 py-3 text-end" style="width: 200px;">Dispatched At</th>
@@ -96,13 +97,18 @@ Email Logs | Email Upload Tool
                                 {{ forloop.counter|add:logs.start_index|add:-1 }}
                             </td>
                             <td class="fw-semibold">
-                                {{ log.recipient_name }}
+                                {{ log.recipient_name|default:"—" }}
                             </td>
                             <td class="text-muted">
                                 {{ log.recipient_email }}
                             </td>
                             <td>
                                 {{ log.subject }}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 rounded-pill px-2.5 py-1 small">
+                                    {{ log.template_display }}
+                                </span>
                             </td>
                             <td>
                                 {% if log.status == "Sent" %}

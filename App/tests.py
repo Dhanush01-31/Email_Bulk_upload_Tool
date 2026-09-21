@@ -359,7 +359,7 @@ class TestSendBulkEmail:
             } 
         response = auth_client.post(self.url,data=payload)
         assertRedirects(response,self.dashboard_url,status_code=302)
-        assert 'Missing columns: email' in self.get_messages_texts(response)
+        assert any('Missing required column: email' in m for m in self.get_messages_texts(response))
 
     def test_no_valid_recipients(self,auth_client):
         csv_file = SimpleUploadedFile('recipients.csv',b"name,email\n , \nNan,nan",content_type="text/csv")
@@ -371,6 +371,24 @@ class TestSendBulkEmail:
         response = auth_client.post(self.url,data=payload)
         assertRedirects(response,self.dashboard_url,status_code=302)
         assert 'No valid recipients found.' in self.get_messages_texts(response)
+
+    @patch(f"{VIEW_MODULE}.send_bulk_email_task")
+    def test_upload_without_name_column(self,mock_task,auth_user,auth_client):
+        csv_file = SimpleUploadedFile('recipients.csv',b"email\nrecipient1@example.com\nrecipient2@example.com",content_type='text/csv')
+        payload = {
+            'subject':"No Name Campaign",
+            'description':'Body Description',
+            'email_template':'standard',
+            'email_excel':csv_file
+        }
+        response = auth_client.post(self.url,data=payload)
+        assertRedirects(response,self.dashboard_url,status_code=302)
+        assert 'Emails sent successfully.' in self.get_messages_texts(response)
+        mock_task.assert_called_once()
+        call_kwargs = mock_task.call_args.kwargs
+        assert len(call_kwargs["recipients"]) == 2
+        assert call_kwargs["recipients"][0] == {"name": "", "email": "recipient1@example.com"}
+        assert call_kwargs["recipients"][1] == {"name": "", "email": "recipient2@example.com"}
 
     @patch(f"{VIEW_MODULE}.send_bulk_email_task")
     def test_sucessful_csv_data_text_input(self,mock_task,auth_client,auth_user):
@@ -620,4 +638,49 @@ class TestEmailLogsView:
         response_page_2 = email_client.get(self.url, {"page": 2})
         assert len(response_page_2.context["logs"]) == 5
         assert response_page_2.context["logs"].has_previous() is True
+
+
+@pytest.mark.django_db
+def test_standard_email_template_task(test_user, settings):
+    settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+    settings.SERVER_TYPE = 'PROD'
+    settings.DEFAULT_FROM_EMAIL = 'noreply@example.com'
+
+    recipients = [{"name": "David", "email": "david@example.com"}]
+    pdf_file = SimpleUploadedFile("invoice.pdf", b"pdf_data", content_type="application/pdf")
+
+    send_bulk_email_task(
+        subject="Monthly Invoice & Update",
+        description="Please find your attached invoice and monthly summary.",
+        recipients=recipients,
+        user=test_user,
+        attachments=[pdf_file],
+        email_template="standard",
+    )
+
+    assert len(mail.outbox) == 1
+    sent_msg = mail.outbox[0]
+    assert sent_msg.to == ["david@example.com"]
+    assert sent_msg.subject == "Monthly Invoice & Update"
+    assert "Dear David," in sent_msg.body
+    assert "Please find your attached invoice" in sent_msg.body
+    assert len(sent_msg.attachments) == 1
+    assert sent_msg.attachments[0][0] == "invoice.pdf"
+
+    log = EmailLog.objects.get(recipient_email="david@example.com")
+    assert log.status == "Sent"
+
+
+@pytest.mark.django_db
+def test_email_preview_standard_template(auth_client):
+    response = auth_client.post(reverse("email_preview"), {
+        "email_template": "standard",
+        "name": "Sarah Connor",
+        "email": "sarah@example.com",
+        "description": "This is a normal email body test.",
+    })
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "Dear Sarah Connor," in content
+    assert "This is a normal email body test." in content
 

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 16px 20px;
+            background-color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #222222;
+        }
+        .email-content {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #222222;
+            max-width: 800px;
+        }
+        .greeting {
+            margin-bottom: 14px;
+            font-size: 14px;
+            color: #222222;
+        }
+        .body-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #222222;
+        }
+        .inline-image {
+            margin: 16px 0;
+        }
+        .inline-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-content">
+        {% if name %}
+        <div class="greeting">Dear {{ name }},</div>
+        {% endif %}
+
+        <div class="body-text">
+            {{ description|linebreaksbr }}
+        </div>
+
+        {% if poster_content %}
+        <div class="body-text" style="margin-top: 14px;">
+            {{ poster_content|linebreaksbr }}
+        </div>
+        {% endif %}
+
+        {% if cta_text and cta_url %}
+        <div style="margin: 20px 0;">
+            <a href="{{ cta_url }}" target="_blank" style="display: inline-block; background-color: #0284c7; color: #ffffff; padding: 10px 22px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                {{ cta_text }}
+            </a>
+        </div>
+        {% endif %}
+
+        {% if footer_text %}
+        <div style="margin-top: 24px; padding-top: 14px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
+            {{ footer_text|linebreaksbr }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -11,6 +11,11 @@ urlpatterns = [
         send_bulk_email_view,
         name="send_bulk_email",
     ),
+    path(
+        "send-batch-email/",
+        send_batch_email_view,
+        name="send_batch_email",
+    ),
      path(
         "email-logs/",
         email_logs,

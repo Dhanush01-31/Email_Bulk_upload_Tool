@@ -110,15 +110,15 @@
                                     <tr>
                                         <td valign="middle" style="padding-right:12px;">
                                             <img src="https://inessconsulting.com/InESS.png" width="45" height="45"
-                                                alt="InESS Consulting" style="display:block; border-radius:8px;">
+                                                alt="Company Logo" style="display:block; border-radius:8px;">
                                         </td>
                                         <td valign="middle">
                                             <p
                                                 style="margin:0; font-family:'Poppins', Arial, sans-serif; font-size:20px; font-weight:700; color:#FFFFFF; line-height:22px;">
-                                                InESS Solutions</p>
+                                                {{ company_name|default:"InESS Solutions" }}</p>
                                             <p
                                                 style="margin:2px 0 0 0; font-family:'Inter', Arial, sans-serif; font-size:10px; font-weight:600; letter-spacing:1px; color:#60A5FA; text-transform:uppercase;">
-                                                Integrated Engineering &amp; Supply Chain</p>
+                                                {{ company_tagline|default:"Integrated Engineering &amp; Supply Chain" }}</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -160,35 +160,52 @@
                     <div
                         style="background-color:#F8FAFC; border-left:4px solid #3B82F6; padding:20px; border-radius:0 8px 8px 0;">
 
+                        {% if poster_content %}
+                        <div style="color:#475569; margin:0;">{{ poster_content|linebreaksbr }}</div>
+                        {% else %}
                         <ul>
-                        <li>Blind decisions don’t just create uncertainty — they create expensive products.</li>
+                            
+                        <li>One partner. Every move forward..</li>
 
-                        <li>When engineering choices, component risks, sourcing decisions, and supply chain realities
-                            operate in silos, problems surface when they’re hardest to fix.</li>
+                        <li>From engineering decisions to supply chain challenges, the right expertise can make every move more confident.</li>
 
-                        <li>InESS brings <strong>Engineering + Supply Chain</strong> together to help you understand the
-                            risks before they reach production.</li>
-
-                        <li>Because better outcomes start with better visibility.</li>
-
+                        <li>InESS brings both together to help you manage risk, control costs, and keep your business moving toward what’s next.</li>
 
                         </ul>
 
-                        <p><strong>Know before you build.</strong></p>
+                        <p><strong>Build smarter. Source better. Move forward with InESS.</strong></p>
+                        {% endif %}
 
-                        <p>🌐 <strong>Learn More:</strong>
-                            <a href="https://inessconsulting.com/" target="_blank"
-                                style="color:#3B82F6; text-decoration:none;">
-                                inessconsulting.com
-                            </a>
-                        </p>
+                        {% if website_url or service_url or contact_email %}
+                        <div style="margin-top:15px; pt-2; border-top:1px dashed #E2E8F0; padding-top:10px;">
+                            {% if website_url %}
+                            <p style="margin:4px 0;">🌐 <strong>Learn More:</strong>
+                                <a href="{{ website_url }}" target="_blank"
+                                    style="color:#3B82F6; text-decoration:none;">
+                                    {{ website_url }}
+                                </a>
+                            </p>
+                            {% endif %}
 
-                        <p>📌 <strong>Explore Our Supply Chain Services:</strong>
-                            <a href="https://forms.gle/prsiWjaqQNVV5r6s5" target="_blank"
-                                style="color:#3B82F6; text-decoration:none;">
-                                Explore Services
-                            </a>
-                        </p>
+                            {% if service_url %}
+                            <p style="margin:4px 0;">📌 <strong>Explore Services:</strong>
+                                <a href="{{ service_url }}" target="_blank"
+                                    style="color:#3B82F6; text-decoration:none;">
+                                    {{ service_url }}
+                                </a>
+                            </p>
+                            {% endif %}
+
+                            {% if contact_email %}
+                            <p style="margin:4px 0;">✉️ <strong>Contact:</strong>
+                                <a href="mailto:{{ contact_email }}"
+                                    style="color:#3B82F6; text-decoration:none;">
+                                    {{ contact_email }}
+                                </a>
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
 
                     </div>
                 </td>
@@ -197,7 +214,7 @@
             </tr>
 
             <!-- ============ CTA BUTTON ============ -->
-
+            {% if cta_text or cta_url %}
             <tr>
                 <td style="padding:0 30px 36px 30px; text-align:center;" class="mobile-padding">
 
@@ -206,9 +223,9 @@
                         <tr>
                             <td align="center" style="border-radius:24px; background-color:#3B82F6;">
 
-                                <a href="https://inessconsulting.com/" target="_blank"
+                                <a href="{{ cta_url|default:'https://inessconsulting.com/' }}" target="_blank"
                                     style="display:inline-block; padding:14px 40px; font-family:'Poppins', Arial, sans-serif; font-size:14px; font-weight:600; color:#FFFFFF !important; text-decoration:none; border-radius:24px;">
-                                    Know Before You Build
+                                    {{ cta_text|default:"Know Before You Build" }}
                                 </a>
 
                             </td>
@@ -219,16 +236,17 @@
 
 
             </tr>
+            {% endif %}
 
 
             <!-- ============ FOOTER ============ -->
             <tr>
                 <td style="background-color:#F8FAFC; padding:24px 30px; border-top:1px solid #E2E8F0; text-align:center; font-family:'Inter', Arial, sans-serif; font-size:12px; color:#64748B;"
                     class="mobile-padding">
-                    <p style="margin:0 0 8px 0; font-weight:600; color:#475569;">InESS Solutions</p>
-                    <p style="margin:0 0 16px 0;">Integrated Engineering, Supply Chain &amp; Spend Optimization Advisory
+                    <p style="margin:0 0 8px 0; font-weight:600; color:#475569;">{{ footer_text|default:company_name|default:"InESS Solutions" }}</p>
+                    <p style="margin:0 0 16px 0;">{{ company_tagline|default:"Integrated Engineering, Supply Chain & Spend Optimization Advisory" }}
                     </p>
-                    <p style="margin:0;">&copy; 2026 InESS Consulting. All rights reserved.</p>
+                    <p style="margin:0;">{{ copyright_text|default:"&copy; 2026 InESS Consulting. All rights reserved." }}</p>
                 </td>
             </tr>
 

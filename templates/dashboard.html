@@ -195,11 +195,11 @@ Dashboard | Email Upload Tool
             Menu
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#" onclick="showSection('overview')"><i
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('overview', event)"><i
                         class="bi bi-grid-fill me-2"></i>Overview</a></li>
-            <li><a class="dropdown-item" href="#" onclick="showSection('campaign')"><i
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('campaign', event)"><i
                         class="bi bi-send-plus-fill me-2"></i>New Campaign</a></li>
-            <li><a class="dropdown-item" href="#" onclick="showSection('logs')"><i
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('logs', event)"><i
                         class="bi bi-clock-history me-2"></i>Campaign Logs</a></li>
             <li>
                 <hr class="dropdown-divider">
@@ -220,17 +220,17 @@ Dashboard | Email Upload Tool
                 <div class="fw-bold mt-1 text-truncate">{{ user.username }}</div>
             </div>
 
-            <a href="#" id="link-overview" class="sidebar-link active" onclick="showSection('overview')">
+            <a href="javascript:void(0)" id="link-overview" class="sidebar-link active" onclick="showSection('overview', event)">
                 <i class="bi bi-grid-fill"></i>
                 Overview
             </a>
 
-            <a href="#" id="link-campaign" class="sidebar-link" onclick="showSection('campaign')">
+            <a href="javascript:void(0)" id="link-campaign" class="sidebar-link" onclick="showSection('campaign', event)">
                 <i class="bi bi-send-plus-fill"></i>
                 New Campaign
             </a>
 
-            <a href="#" id="link-logs" class="sidebar-link" onclick="showSection('logs')">
+            <a href="javascript:void(0)" id="link-logs" class="sidebar-link" onclick="showSection('logs', event)">
                 <i class="bi bi-clock-history"></i>
                 Campaign Logs
             </a>
@@ -261,7 +261,7 @@ Dashboard | Email Upload Tool
                     <h3 class="fw-bold text-dark-slate mb-1">Overview Dashboard</h3>
                     <p class="text-muted small mb-0">Monitor and orchestrate your bulk mail dispatch list</p>
                 </div>
-                <button class="btn btn-primary rounded-3 px-3 py-2" onclick="showSection('campaign')">
+                <button class="btn btn-primary rounded-3 px-3 py-2" onclick="showSection('campaign', event)">
                     <i class="bi bi-plus-lg me-2"></i>New Campaign
                 </button>
             </div>
@@ -319,7 +319,7 @@ Dashboard | Email Upload Tool
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                     <h5 class="fw-bold mb-0 text-dark-slate">Recent Campaign Logs</h5>
                     <button class="btn btn-outline-secondary btn-sm rounded-2 text-decoration-none"
-                        onclick="showSection('logs')">View All</button>
+                        onclick="showSection('logs', event)">View All</button>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0 text-dark-slate">
@@ -328,6 +328,7 @@ Dashboard | Email Upload Tool
                                 <th class="border-0 px-4">Recipient Name</th>
                                 <th class="border-0">Recipient Email</th>
                                 <th class="border-0">Subject</th>
+                                <th class="border-0">Template</th>
                                 <th class="border-0">Status</th>
                                 <th class="border-0 px-4 text-end">Sent At</th>
                             </tr>
@@ -338,6 +339,11 @@ Dashboard | Email Upload Tool
                                 <td class="px-4 fw-semibold">{{ log.recipient_name }}</td>
                                 <td>{{ log.recipient_email }}</td>
                                 <td>{{ log.subject }}</td>
+                                <td>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 rounded-pill px-2.5 py-1 small">
+                                        {{ log.template_display }}
+                                    </span>
+                                </td>
                                 <td>
                                     {% if log.status == "Sent" %}
                                     <span
@@ -352,7 +358,7 @@ Dashboard | Email Upload Tool
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
+                                <td colspan="6" class="text-center py-5 text-muted">
                                     <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
                                     No email logs found. Launch a campaign to see records.
                                 </td>
@@ -434,6 +440,7 @@ Dashboard | Email Upload Tool
                                 <th class="border-0 px-4">Recipient Name</th>
                                 <th class="border-0">Recipient Email</th>
                                 <th class="border-0">Subject</th>
+                                <th class="border-0">Template</th>
                                 <th class="border-0">Status</th>
                                 <th class="border-0 px-4 text-end">Sent At</th>
                             </tr>
@@ -444,6 +451,11 @@ Dashboard | Email Upload Tool
                                 <td class="px-4 fw-semibold">{{ log.recipient_name }}</td>
                                 <td>{{ log.recipient_email }}</td>
                                 <td>{{ log.subject }}</td>
+                                <td>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 rounded-pill px-2.5 py-1 small">
+                                        {{ log.template_display }}
+                                    </span>
+                                </td>
                                 <td>
                                     {% if log.status == "Sent" %}
                                     <span
@@ -458,7 +470,7 @@ Dashboard | Email Upload Tool
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
+                                <td colspan="6" class="text-center py-5 text-muted">
                                     <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
                                     No email logs matching filters.
                                 </td>
@@ -549,9 +561,24 @@ Dashboard | Email Upload Tool
                         <p class="text-secondary text-center small mb-4">Choose a corporate base email template to begin
                             styling your campaign.</p>
 
-                        <div class="row g-4 justify-content-center">
+                        <div class="row g-3 justify-content-center">
+                            <!-- Template 0: Standard / Normal Email -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100 template-card p-4 border-2" id="tcard-standard"
+                                    onclick="selectCampaignTemplate('standard')">
+                                    <div class="text-center">
+                                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3"
+                                            style="width: 60px; height: 60px; color: #0284c7; background-color: rgba(2, 132, 199, 0.08) !important;">
+                                            <i class="bi bi-envelope-paper fs-3"></i>
+                                        </div>
+                                        <h5 class="fw-bold mb-2">Standard Email</h5>
+                                        <p class="text-muted small mb-0">Clean, normal email with subject, custom body, and attachments without marketing flyers.</p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Template 1: CE -->
-                            <div class="col-md-3">
+                            <div class="col-md-6 col-lg-4">
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-ce"
                                     onclick="selectCampaignTemplate('ce')">
                                     <div class="text-center">
@@ -567,7 +594,7 @@ Dashboard | Email Upload Tool
                             </div>
 
                             <!-- Template 2: SupplyChain -->
-                            <div class="col-md-3">
+                            <div class="col-md-6 col-lg-4">
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-functional"
                                     onclick="selectCampaignTemplate('functional')">
                                     <div class="text-center">
@@ -583,7 +610,7 @@ Dashboard | Email Upload Tool
                             </div>
 
                             <!-- Template 3: Poster -->
-                            <div class="col-md-3">
+                            <div class="col-md-6 col-lg-4">
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-poster"
                                     onclick="selectCampaignTemplate('poster')">
                                     <div class="text-center">
@@ -599,7 +626,7 @@ Dashboard | Email Upload Tool
                             </div>
 
                             <!-- Template 4: CE_supplychainposter -->
-                            <div class="col-md-3">
+                            <div class="col-md-6 col-lg-4">
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-CE_supplychainposter"
                                     onclick="selectCampaignTemplate('CE_supplychainposter')">
                                     <div class="text-center">
@@ -640,8 +667,8 @@ Dashboard | Email Upload Tool
                     <!-- STEP 3: Upload Excel -->
                     <div class="wizard-step-pane" id="pane-3" style="display: none;">
                         <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 3: Upload Recipient Excel File</h4>
-                        <p class="text-secondary text-center small mb-4">Provide an Excel file containing headers:
-                            <strong class="text-primary">Name</strong> and <strong class="text-primary">Email</strong>.
+                        <p class="text-secondary text-center small mb-4">Provide an Excel or CSV file containing at least the
+                            <strong class="text-primary">Email</strong> column (<strong class="text-primary">Name</strong> is optional).
                         </p>
 
                         <div class="mx-auto" style="max-width: 600px;">
@@ -650,10 +677,10 @@ Dashboard | Email Upload Tool
                                 id="excel-drop-zone">
                                 <i class="bi bi-file-earmark-spreadsheet text-muted display-4 d-block mb-3"></i>
                                 <h6 class="fw-bold text-dark-slate mb-2">Select Spreadsheet or Drag & Drop</h6>
-                                <p class="text-muted small mb-3">Accepts .xlsx, .xls formats</p>
+                                <p class="text-muted small mb-3">Accepts .xlsx, .xls, .csv formats</p>
 
                                 <input type="file" name="email_excel" id="excel-file-input" class="form-control d-none"
-                                    accept=".xlsx,.xls">
+                                    accept=".xlsx,.xls,.csv">
                                 <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-4"
                                     onclick="document.getElementById('excel-file-input').click()">
                                     Browse Files
@@ -722,24 +749,87 @@ Dashboard | Email Upload Tool
                         </div>
                     </div>
 
-                    <!-- STEP 5: Fill Email Body -->
+                    <!-- STEP 5: Fill Email Body & Customize Poster -->
                     <div class="wizard-step-pane" id="pane-5" style="display: none;">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 5: Write Email Body Message</h4>
-                        <p class="text-secondary text-center small mb-4">Enter the core description body text. Standard
-                            formatting (paragraphs) will render dynamically.</p>
+                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 5: Write Email Body &amp; Customize Template</h4>
+                        <p class="text-secondary text-center small mb-4">Enter the core description message and customize your template poster content and branding.</p>
 
-                        <div class="mx-auto" style="max-width: 600px;">
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Email Description <span
+                        <div class="mx-auto" style="max-width: 680px;">
+                            <div class="mb-4">
+                                <label class="form-label small fw-semibold text-secondary">Email Greeting &amp; Introduction Description <span
                                         class="text-danger">*</span></label>
                                 <textarea name="description" id="description-textarea"
-                                    class="form-control bg-light rounded-3" rows="8"
-                                    placeholder="Type or paste the email contents here..." required></textarea>
+                                    class="form-control bg-light rounded-3" rows="5"
+                                    placeholder="Type or paste the email greeting and intro contents here..." required></textarea>
                                 <small class="text-muted d-block mt-2">
-                                    <i class="bi bi-info-circle me-1"></i> Personalization tags: The template
-                                    automatically greets recipients with <code>Hello Name</code> at the top using
-                                    spreadsheet data.
+                                    <i class="bi bi-info-circle me-1"></i> Personalization tags: If names are provided in your upload, recipients will be greeted with <code>Dear Name</code> automatically. If names are omitted, the email sends directly without names.
                                 </small>
+                            </div>
+
+                            <!-- Poster & Template Content Customization Panel -->
+                            <div class="card border rounded-4 shadow-sm bg-white overflow-hidden mb-3">
+                                <div class="card-header bg-light py-3 px-4 d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle" style="width: 28px; height: 28px; font-size: 14px;">
+                                            <i class="bi bi-palette-fill"></i>
+                                        </div>
+                                        <div>
+                                            <span class="fw-bold text-dark-slate d-block">Poster &amp; Template Content</span>
+                                            <small class="text-muted text-xs">Customize poster text, buttons, links &amp; branding</small>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="resetTemplateDefaults()">
+                                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Defaults
+                                    </button>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Company / Header Name</label>
+                                            <input type="text" name="company_name" id="tmpl-company-name" class="form-control bg-light rounded-3" placeholder="e.g. InESS Solutions">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Tagline / Subtitle</label>
+                                            <input type="text" name="company_tagline" id="tmpl-company-tagline" class="form-control bg-light rounded-3" placeholder="e.g. Integrated Engineering &amp; Supply Chain">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Poster Body / Key Highlights Content</label>
+                                            <textarea name="poster_content" id="tmpl-poster-content" class="form-control bg-light rounded-3" rows="4" placeholder="Enter key highlights, bullet points, or custom poster text..."></textarea>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">CTA Button Label</label>
+                                            <input type="text" name="cta_text" id="tmpl-cta-text" class="form-control bg-light rounded-3" placeholder="e.g. Know Before You Build">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">CTA Button Destination Link</label>
+                                            <input type="url" name="cta_url" id="tmpl-cta-url" class="form-control bg-light rounded-3" placeholder="https://example.com/signup">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Website URL</label>
+                                            <input type="url" name="website_url" id="tmpl-website-url" class="form-control bg-light rounded-3" placeholder="https://inessconsulting.com/">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Service / Form Link</label>
+                                            <input type="text" name="service_url" id="tmpl-service-url" class="form-control bg-light rounded-3" placeholder="https://forms.gle/... or service link">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Contact Email</label>
+                                            <input type="email" name="contact_email" id="tmpl-contact-email" class="form-control bg-light rounded-3" placeholder="e.g. contact@example.com">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Footer / Sign-off Text</label>
+                                            <input type="text" name="footer_text" id="tmpl-footer-text" class="form-control bg-light rounded-3" placeholder="e.g. InESS Solutions">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Copyright Notice</label>
+                                            <input type="text" name="copyright_text" id="tmpl-copyright-text" class="form-control bg-light rounded-3" placeholder="e.g. © 2026 InESS Consulting. All rights reserved.">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -862,12 +952,20 @@ Dashboard | Email Upload Tool
                                         <span class="fw-bold text-primary" id="summary-template">CE Template</span>
                                     </div>
                                     <div class="d-flex justify-content-between border-bottom py-2">
+                                        <span class="text-secondary fw-semibold">Brand / Header:</span>
+                                        <span class="fw-semibold text-dark-slate" id="summary-brand">InESS Solutions</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-bottom py-2">
                                         <span class="text-secondary fw-semibold">Subject Line:</span>
                                         <span class="fw-bold" id="summary-subject">-</span>
                                     </div>
                                     <div class="d-flex justify-content-between border-bottom py-2">
                                         <span class="text-secondary fw-semibold">Total Recipients:</span>
                                         <span class="badge bg-success" id="summary-recipients">0 Contacts</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-bottom py-2">
+                                        <span class="text-secondary fw-semibold">CTA Button:</span>
+                                        <span class="text-muted" id="summary-cta">None</span>
                                     </div>
                                     <div class="d-flex justify-content-between border-bottom py-2">
                                         <span class="text-secondary fw-semibold">Inline Image:</span>
@@ -915,16 +1013,22 @@ Dashboard | Email Upload Tool
     </div>
 </div>
 
-<!-- Sending Overlay spinner -->
+<!-- Sending Overlay spinner & progress -->
 <div id="sendingLoaderOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none"
-    style="background: rgba(15, 23, 42, 0.85); z-index: 9999; backdrop-filter: blur(4px);">
+    style="background: rgba(15, 23, 42, 0.9); z-index: 9999; backdrop-filter: blur(6px);">
     <div class="d-flex flex-column justify-content-center align-items-center h-100 text-white">
-        <div class="spinner-border text-primary mb-4" style="width: 5rem; height: 5rem;" role="status"></div>
-        <h3 class="fw-bold">Executing Campaign dispatch...</h3>
-        <p class="text-muted px-4 text-center max-w-sm" style="max-width: 450px;">
-            Personalizing layouts and executing safe SMTP transmissions. Please do not close or reload this page until
-            completion.
+        <div class="spinner-border text-primary mb-4" id="sending-overlay-spinner" style="width: 4.5rem; height: 4.5rem;" role="status"></div>
+        <div id="sending-overlay-success-icon" class="text-success mb-3 d-none">
+            <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+        </div>
+        <h3 class="fw-bold" id="sending-overlay-title">Executing Campaign dispatch...</h3>
+        <p class="text-white-50 px-4 text-center mb-3" id="sending-overlay-desc" style="max-width: 480px;">
+            Personalizing layouts and executing safe SMTP transmissions. Please do not close or reload this page.
         </p>
+        <div class="progress w-50 my-2" id="sending-overlay-progress-container" style="height: 12px; max-width: 450px; background-color: rgba(255,255,255,0.15);">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="sending-overlay-progress-bar" style="width: 0%;"></div>
+        </div>
+        <small class="text-white-50 mt-1" id="sending-overlay-counter">0 / 0 Contacts Processed</small>
     </div>
 </div>
 
@@ -932,18 +1036,44 @@ Dashboard | Email Upload Tool
 <!-- JAVASCRIPT APP LOGIC FOR WIZARD FLOW -->
 <script>
     // Tab toggling
-    function showSection(sectionId) {
-        document.querySelectorAll('.db-section').forEach(s => s.style.display = 'none');
-        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    function showSection(sectionId, event) {
+        if (event) {
+            try {
+                event.preventDefault();
+                event.stopPropagation();
+            } catch (e) {}
+        }
 
-        document.getElementById('section-' + sectionId).style.display = 'block';
+        const validSections = ['overview', 'campaign', 'logs'];
+        if (!validSections.includes(sectionId)) {
+            sectionId = 'overview';
+        }
+
+        document.querySelectorAll('.db-section').forEach(s => {
+            s.style.display = 'none';
+        });
+        document.querySelectorAll('.sidebar-link').forEach(l => {
+            l.classList.remove('active');
+        });
+
+        const targetSection = document.getElementById('section-' + sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+        }
+
         const activeLink = document.getElementById('link-' + sectionId);
-        if (activeLink) activeLink.classList.add('active');
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
 
-        // Sync URL query tab parameter without reloading
-        const url = new URL(window.location);
-        url.searchParams.set('tab', sectionId);
-        window.history.pushState({}, '', url);
+        // Sync URL query tab parameter safely without breaking
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', sectionId);
+            window.history.pushState({ tab: sectionId }, '', url.toString());
+        } catch (err) {
+            console.warn("Could not push state to history:", err);
+        }
     }
 
     // Auto toggle tab from query param if active
@@ -951,6 +1081,12 @@ Dashboard | Email Upload Tool
         const params = new URLSearchParams(window.location.search);
         const activeTab = params.get('tab') || 'overview';
         showSection(activeTab);
+    });
+
+    window.addEventListener('popstate', function (e) {
+        const params = new URLSearchParams(window.location.search);
+        const tab = (e.state && e.state.tab) || params.get('tab') || 'overview';
+        showSection(tab);
     });
 
     // Wizard Variables
@@ -962,6 +1098,102 @@ Dashboard | Email Upload Tool
     let bodyImageBase64 = ""; // local image URL or base64
     let currentPreviewRecipientIndex = 0;
 
+    // Template default presets for poster & template customization
+    const templateDefaults = {
+        standard: {
+            company_name: "My Company",
+            company_tagline: "",
+            poster_content: "",
+            cta_text: "",
+            cta_url: "",
+            website_url: "",
+            service_url: "",
+            contact_email: "",
+            footer_text: "Kind regards,\nYour Team",
+            copyright_text: ""
+        },
+        poster: {
+            company_name: "InESS Solutions",
+            company_tagline: "",
+            poster_content: `Supply chain excellence isn't just about moving products - it's about creating a resilient, data-driven ecosystem that keeps your business ahead of change.
+
+At InESS Solutions, we help organizations:
+✔ Optimize sourcing and procurement
+✔ Improve operational visibility
+✔ Reduce costs through process automation
+✔ Build agile, future-ready supply chains`,
+            cta_text: "Explore Solutions",
+            cta_url: "https://forms.gle/EojSXwVwmfNGh4Pd7",
+            website_url: "https://inessconsulting.com/",
+            service_url: "https://forms.gle/EojSXwVwmfNGh4Pd7",
+            contact_email: "srinithin@inessconsulting.com",
+            footer_text: "InESS Solutions",
+            copyright_text: "© 2026 InESS Consulting. All rights reserved."
+        },
+        CE_supplychainposter: {
+            company_name: "InESS Solutions",
+            company_tagline: "Integrated Engineering & Supply Chain",
+            poster_content: `One partner. Every move forward.
+From engineering decisions to supply chain challenges, the right expertise can make every move more confident.
+
+InESS brings both together to help you manage risk, control costs, and keep your business moving toward what’s next.
+
+Build smarter. Source better. Move forward with InESS.`,
+            cta_text: "Know Before You Build",
+            cta_url: "https://inessconsulting.com/",
+            website_url: "https://inessconsulting.com/",
+            service_url: "https://forms.gle/prsiWjaqQNVV5r6s5",
+            contact_email: "srinithin@inessconsulting.com",
+            footer_text: "InESS Solutions",
+            copyright_text: "© 2026 InESS Consulting. All rights reserved."
+        },
+        ce: {
+            company_name: "InESS Solutions",
+            company_tagline: "Integrated Engineering & Operations Advisory",
+            poster_content: "",
+            cta_text: "Explore Advisory Services",
+            cta_url: "https://inessconsulting.com/",
+            website_url: "https://inessconsulting.com/",
+            service_url: "",
+            contact_email: "srinithin@inessconsulting.com",
+            footer_text: "InESS Solutions",
+            copyright_text: "© 2026 InESS Consulting. All rights reserved."
+        },
+        functional: {
+            company_name: "InESS Solutions",
+            company_tagline: "Supply Chain & Spend Optimization",
+            poster_content: "",
+            cta_text: "Learn More",
+            cta_url: "https://inessconsulting.com/",
+            website_url: "https://inessconsulting.com/",
+            service_url: "",
+            contact_email: "srinithin@inessconsulting.com",
+            footer_text: "InESS Solutions",
+            copyright_text: "© 2026 InESS Consulting. All rights reserved."
+        }
+    };
+
+    function applyTemplateDefaults(templateId) {
+        const defaults = templateDefaults[templateId] || templateDefaults['standard'];
+        const getEl = id => document.getElementById(id);
+        if (getEl('tmpl-company-name')) getEl('tmpl-company-name').value = defaults.company_name || "";
+        if (getEl('tmpl-company-tagline')) getEl('tmpl-company-tagline').value = defaults.company_tagline || "";
+        if (getEl('tmpl-poster-content')) getEl('tmpl-poster-content').value = defaults.poster_content || "";
+        if (getEl('tmpl-cta-text')) getEl('tmpl-cta-text').value = defaults.cta_text || "";
+        if (getEl('tmpl-cta-url')) getEl('tmpl-cta-url').value = defaults.cta_url || "";
+        if (getEl('tmpl-website-url')) getEl('tmpl-website-url').value = defaults.website_url || "";
+        if (getEl('tmpl-service-url')) getEl('tmpl-service-url').value = defaults.service_url || "";
+        if (getEl('tmpl-contact-email')) getEl('tmpl-contact-email').value = defaults.contact_email || "";
+        if (getEl('tmpl-footer-text')) getEl('tmpl-footer-text').value = defaults.footer_text || "";
+        if (getEl('tmpl-copyright-text')) getEl('tmpl-copyright-text').value = defaults.copyright_text || "";
+    }
+
+    function resetTemplateDefaults() {
+        if (selectedTemplate) {
+            applyTemplateDefaults(selectedTemplate);
+        }
+    }
+
     // Select Template action (Step 1)
     function selectCampaignTemplate(templateId) {
         selectedTemplate = templateId;
@@ -972,6 +1204,9 @@ Dashboard | Email Upload Tool
 
         // Set form field
         document.getElementById('form-template-field').value = templateId;
+
+        // Populate template defaults
+        applyTemplateDefaults(templateId);
 
         // Advance to step 2 automatically with loader
         navigateWizard(1);
@@ -1119,8 +1354,8 @@ Dashboard | Email Upload Tool
                     const nameIndex = headers.indexOf('name');
                     const emailIndex = headers.indexOf('email');
                     
-                    if (nameIndex === -1 || emailIndex === -1) {
-                        showExcelError("Columns 'Name' and 'Email' are required in CSV header. Found: " + lines[0]);
+                    if (emailIndex === -1) {
+                        showExcelError("Column 'Email' is required in CSV header. Found: " + lines[0]);
                         return;
                     }
                     
@@ -1128,17 +1363,18 @@ Dashboard | Email Upload Tool
                     for(let i = 1; i < lines.length; i++) {
                         if (!lines[i].trim()) continue;
                         const cols = lines[i].split(',');
-                        if (cols.length > Math.max(nameIndex, emailIndex)) {
-                            const nameVal = cols[nameIndex].replace(/^["']|["']$/g, '').trim();
+                        if (cols.length > emailIndex) {
+                            let nameVal = (nameIndex !== -1 && cols.length > nameIndex) ? cols[nameIndex].replace(/^["']|["']$/g, '').trim() : '';
                             const emailVal = cols[emailIndex].replace(/^["']|["']$/g, '').trim();
-                            if (nameVal && emailVal) {
+                            if (nameVal.toLowerCase() === 'nan') nameVal = '';
+                            if (emailVal && emailVal.toLowerCase() !== 'nan') {
                                 excelContacts.push({ name: nameVal, email: emailVal });
                             }
                         }
                     }
                     
                     if (excelContacts.length === 0) {
-                        showExcelError("No valid rows containing name and email values were found in CSV.");
+                        showExcelError("No valid rows containing email addresses were found in CSV.");
                         return;
                     }
                     
@@ -1175,26 +1411,26 @@ Dashboard | Email Upload Tool
                 // Get header columns (keys of first item)
                 const headers = Object.keys(json[0]).map(h => h.trim().toLowerCase());
 
-                if (!headers.includes('name') || !headers.includes('email')) {
-                    showExcelError("Columns 'Name' and 'Email' are required. Found: " + Object.keys(json[0]).join(', '));
+                if (!headers.includes('email')) {
+                    showExcelError("Column 'Email' is required. Found: " + Object.keys(json[0]).join(', '));
                     return;
                 }
 
-                // Extract contacts
+                // Extract contacts (Name is optional)
                 excelContacts = json.map(row => {
-                    // Match case insensitive headers
                     let nameVal = "";
                     let emailVal = "";
                     Object.keys(row).forEach(k => {
                         const cleanK = k.trim().toLowerCase();
-                        if (cleanK === 'name') nameVal = String(row[k]).trim();
-                        if (cleanK === 'email') emailVal = String(row[k]).trim();
+                        if (cleanK === 'name') nameVal = String(row[k] || '').trim();
+                        if (cleanK === 'email') emailVal = String(row[k] || '').trim();
                     });
+                    if (nameVal.toLowerCase() === 'nan') nameVal = '';
                     return { name: nameVal, email: emailVal };
-                }).filter(c => c.name && c.email);
+                }).filter(c => c.email && c.email.toLowerCase() !== 'nan');
 
                 if (excelContacts.length === 0) {
-                    showExcelError("No valid rows containing name and email values were found.");
+                    showExcelError("No valid rows containing email addresses were found.");
                     return;
                 }
 
@@ -1229,7 +1465,8 @@ Dashboard | Email Upload Tool
         const tableBody = document.getElementById('excel-preview-rows');
         tableBody.innerHTML = "";
         excelContacts.slice(0, 5).forEach(c => {
-            const row = `<tr><td>${c.name}</td><td>${c.email}</td></tr>`;
+            const displayName = c.name || '<span class="text-muted fst-italic">—</span>';
+            const row = `<tr><td>${displayName}</td><td>${c.email}</td></tr>`;
             tableBody.insertAdjacentHTML('beforeend', row);
         });
 
@@ -1428,20 +1665,25 @@ Dashboard | Email Upload Tool
         const description = document.getElementById('description-textarea').value;
 
         // Defaults if list is empty
-        let recName = "Recipient Name";
+        let recName = "";
         let recEmail = "recipient@example.com";
 
         if (excelContacts.length > 0 && excelContacts[0]) {
-            recName = excelContacts[0].name;
+            recName = excelContacts[0].name || "";
             recEmail = excelContacts[0].email;
-            document.getElementById('preview-recipient-label').innerText = `Recipient: ${recName}`;
+            document.getElementById('preview-recipient-label').innerText = recName ? `Recipient: ${recName}` : `Recipient: ${recEmail}`;
         } else {
             document.getElementById('preview-recipient-label').innerText = "Recipient: Mock Recipient (Excel not loaded)";
         }
 
         // Set header views
         document.getElementById('preview-subject-header').innerText = subject || '(No Subject)';
-        document.getElementById('preview-to-header').innerText = `${recName} <${recEmail}>`;
+        document.getElementById('preview-to-header').innerText = recName ? `${recName} <${recEmail}>` : recEmail;
+
+        const getVal = id => {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        };
 
         // Trigger render endpoint post
         const formData = new FormData();
@@ -1451,6 +1693,16 @@ Dashboard | Email Upload Tool
         formData.append('email', recEmail);
         formData.append('description', description);
         formData.append('has_image', bodyImageBase64 ? 'true' : 'false');
+        formData.append('company_name', getVal('tmpl-company-name'));
+        formData.append('company_tagline', getVal('tmpl-company-tagline'));
+        formData.append('poster_content', getVal('tmpl-poster-content'));
+        formData.append('cta_text', getVal('tmpl-cta-text'));
+        formData.append('cta_url', getVal('tmpl-cta-url'));
+        formData.append('website_url', getVal('tmpl-website-url'));
+        formData.append('service_url', getVal('tmpl-service-url'));
+        formData.append('contact_email', getVal('tmpl-contact-email'));
+        formData.append('footer_text', getVal('tmpl-footer-text'));
+        formData.append('copyright_text', getVal('tmpl-copyright-text'));
 
         const iframe = document.getElementById('preview-email-iframe');
         iframe.srcdoc = "<p class='text-center p-5 text-muted'><span class='spinner-border spinner-border-sm me-2'></span>Rendering template view...</p>";
@@ -1488,14 +1740,31 @@ Dashboard | Email Upload Tool
 
     // Step 8 Campaign verification summary compiler
     function updateSummaryDetails() {
-        let templateName = "CE Template";
-        if (selectedTemplate === 'functional') templateName = "SupplyChain Template";
-        if (selectedTemplate === 'poster') templateName = "Poster Template";
-        if (selectedTemplate === 'CE_supplychainposter') templateName = "CE Supply Chain Poster";
+        let templateName = "Standard Email";
+        if (selectedTemplate === 'standard') templateName = "Standard Email";
+        else if (selectedTemplate === 'ce') templateName = "CE Template";
+        else if (selectedTemplate === 'functional') templateName = "SupplyChain Template";
+        else if (selectedTemplate === 'poster') templateName = "Poster Template";
+        else if (selectedTemplate === 'CE_supplychainposter') templateName = "CE Supply Chain Poster";
+
+        const getVal = id => {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        };
+
+        const brandName = getVal('tmpl-company-name') || 'InESS Solutions';
+        const ctaLabel = getVal('tmpl-cta-text');
+        const ctaLink = getVal('tmpl-cta-url');
 
         document.getElementById('summary-template').innerText = templateName;
+        if (document.getElementById('summary-brand')) {
+            document.getElementById('summary-brand').innerText = brandName;
+        }
         document.getElementById('summary-subject').innerText = document.getElementById('subject-input').value;
         document.getElementById('summary-recipients').innerText = excelContacts.length + ' Contacts';
+        if (document.getElementById('summary-cta')) {
+            document.getElementById('summary-cta').innerText = (ctaLabel && ctaLink) ? `${ctaLabel} (${ctaLink})` : (ctaLabel || 'None');
+        }
 
         document.getElementById('summary-image').innerText = bodyImageBase64 ? 'Yes (Inline image uploaded)' : 'None';
 
@@ -1504,10 +1773,125 @@ Dashboard | Email Upload Tool
         document.getElementById('summary-attachments').innerText = filesCount + ' Files';
     }
 
-    // Handle final form sending overlays
-    document.getElementById('wizardCampaignForm').addEventListener('submit', function () {
-        document.getElementById('wizard-submit-btn').disabled = true;
-        document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
+    // Handle final form sending overlays with chunked batch sending (Vercel & Local compatible)
+    document.getElementById('wizardCampaignForm').addEventListener('submit', async function (e) {
+        if (excelContacts && excelContacts.length > 0) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('wizard-submit-btn');
+            submitBtn.disabled = true;
+
+            const overlay = document.getElementById('sendingLoaderOverlay');
+            overlay.classList.remove('d-none');
+
+            const spinner = document.getElementById('sending-overlay-spinner');
+            const successIcon = document.getElementById('sending-overlay-success-icon');
+            const progressBar = document.getElementById('sending-overlay-progress-bar');
+            const overlayTitle = document.getElementById('sending-overlay-title');
+            const overlayDesc = document.getElementById('sending-overlay-desc');
+            const counterText = document.getElementById('sending-overlay-counter');
+
+            const total = excelContacts.length;
+            const batchSize = 10; // 10 recipients per batch guarantees requests complete well within Vercel's 10-second timeout
+            let processed = 0;
+            let hasError = false;
+
+            const subject = document.getElementById('subject-input').value;
+            const description = document.getElementById('description-textarea').value;
+            const template = selectedTemplate || 'ce';
+            const imgInput = document.getElementById('image-file-input');
+            const attachInput = document.getElementById('attachments-file-input');
+
+            const getVal = id => {
+                const el = document.getElementById(id);
+                return el ? el.value : '';
+            };
+
+            for (let i = 0; i < total; i += batchSize) {
+                const batch = excelContacts.slice(i, i + batchSize);
+                const batchNum = Math.floor(i / batchSize) + 1;
+                const totalBatches = Math.ceil(total / batchSize);
+
+                overlayTitle.innerText = `Sending Batch ${batchNum} of ${totalBatches}...`;
+                overlayDesc.innerText = `Dispatching emails safely via SMTP. Please do not close this window.`;
+                counterText.innerText = `${processed} / ${total} Contacts Processed`;
+
+                const formData = new FormData();
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                formData.append('subject', subject);
+                formData.append('description', description);
+                formData.append('email_template', template);
+                formData.append('recipients', JSON.stringify(batch));
+                formData.append('company_name', getVal('tmpl-company-name'));
+                formData.append('company_tagline', getVal('tmpl-company-tagline'));
+                formData.append('poster_content', getVal('tmpl-poster-content'));
+                formData.append('cta_text', getVal('tmpl-cta-text'));
+                formData.append('cta_url', getVal('tmpl-cta-url'));
+                formData.append('website_url', getVal('tmpl-website-url'));
+                formData.append('service_url', getVal('tmpl-service-url'));
+                formData.append('contact_email', getVal('tmpl-contact-email'));
+                formData.append('footer_text', getVal('tmpl-footer-text'));
+                formData.append('copyright_text', getVal('tmpl-copyright-text'));
+
+                if (imgInput.files && imgInput.files[0]) {
+                    formData.append('description_image', imgInput.files[0]);
+                }
+                if (attachInput.files) {
+                    for (let j = 0; j < attachInput.files.length; j++) {
+                        formData.append('attachments', attachInput.files[j]);
+                    }
+                }
+
+                try {
+                    const response = await fetch("{% url 'send_batch_email' %}", {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    let data;
+                    const responseText = await response.text();
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (parseErr) {
+                        throw new Error(`Server error (${response.status}): Unexpected response received.`);
+                    }
+
+                    if (!response.ok || data.status === 'error') {
+                        throw new Error(data.message || data.error || 'Server error occurred during dispatch');
+                    }
+
+                    processed += batch.length;
+                    const percent = Math.min(100, Math.round((processed / total) * 100));
+                    progressBar.style.width = percent + '%';
+                    counterText.innerText = `${processed} / ${total} Contacts Processed`;
+                } catch (err) {
+                    console.error("Batch sending error:", err);
+                    hasError = true;
+                    overlayTitle.innerText = "Error During Dispatch";
+                    overlayDesc.innerText = err.message || "Failed while sending email batch. Checking campaign logs...";
+                    await new Promise(r => setTimeout(r, 2500));
+                    break;
+                }
+            }
+
+            if (!hasError) {
+                spinner.classList.add('d-none');
+                successIcon.classList.remove('d-none');
+                overlayTitle.innerText = "All Emails Dispatched Successfully!";
+                overlayDesc.innerText = `Successfully processed ${processed} of ${total} recipients. Redirecting to logs...`;
+                progressBar.style.width = '100%';
+                progressBar.classList.remove('progress-bar-animated');
+                counterText.innerText = `${total} / ${total} Contacts Completed`;
+            }
+
+            setTimeout(() => {
+                window.location.href = "{% url 'dashboard' %}?tab=logs";
+            }, 1800);
+        } else {
+            // Fallback to normal form submit if excel was uploaded directly without parsing
+            document.getElementById('wizard-submit-btn').disabled = true;
+            document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
+        }
     });
 
     // Export dashboard logs to CSV/Excel

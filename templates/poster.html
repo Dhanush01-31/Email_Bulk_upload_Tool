@@ -81,7 +81,7 @@ body{
 
 <div class="header">
 
-<h2>InESS Solutions</h2>
+<h2>{{ company_name|default:"InESS Solutions" }}</h2>
 
 </div>
 
@@ -89,13 +89,16 @@ body{
 
 {% if has_image %}
 
-<img src="cid:description_image">
+<img src="cid:description_image" alt="Poster">
 
 {% endif %}
 
 </div>
 
 <div class="caption">
+{% if poster_content %}
+<p style="color:black; margin:0;">{{ poster_content|linebreaksbr }}</p>
+{% else %}
 <p style="color:black">Supply chain excellence isn't just about moving products - it's about creating a resilient, data-driven ecosystem that keeps your business ahead of change.
 
 At InESS Solutions, we help organizations:
@@ -108,6 +111,23 @@ Ready to transform your operations?
 Explore our Supply Chain solutions: https://forms.gle/EojSXwVwmfNGh4Pd7
 Learn More : https://inessconsulting.com/
 Contact : srinithin@inessconsulting.com
+</p>
+{% endif %}
+
+{% if cta_text and cta_url %}
+<div style="text-align: center; margin-top: 25px; margin-bottom: 10px;">
+    <a href="{{ cta_url }}" target="_blank" style="display: inline-block; background: #0d6efd; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">
+        {{ cta_text }}
+    </a>
+</div>
+{% endif %}
+
+{% if website_url or contact_email %}
+<div style="margin-top: 15px; font-size: 13px; color: #666; border-top: 1px dashed #ddd; padding-top: 12px;">
+    {% if website_url %}<div>🌐 <strong>Website:</strong> <a href="{{ website_url }}" target="_blank" style="color:#0d6efd;">{{ website_url }}</a></div>{% endif %}
+    {% if contact_email %}<div>✉️ <strong>Contact:</strong> <a href="mailto:{{ contact_email }}" style="color:#0d6efd;">{{ contact_email }}</a></div>{% endif %}
+</div>
+{% endif %}
 
 </div>
 
@@ -115,7 +135,7 @@ Contact : srinithin@inessconsulting.com
 
 Regards,<br>
 
-<strong>InESS Solutions</strong>
+<strong>{{ footer_text|default:company_name|default:"InESS Solutions" }}</strong>
 
 </div>
 
