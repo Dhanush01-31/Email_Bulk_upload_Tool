@@ -221,6 +221,21 @@ def dashboard(request):
 # Upload Excel
 # -------------------------
 
+def extract_template_data(post_data):
+    return {
+        "company_name": post_data.get("company_name", "").strip(),
+        "company_tagline": post_data.get("company_tagline", "").strip(),
+        "poster_content": post_data.get("poster_content", "").strip(),
+        "cta_text": post_data.get("cta_text", "").strip(),
+        "cta_url": post_data.get("cta_url", "").strip(),
+        "website_url": post_data.get("website_url", "").strip(),
+        "service_url": post_data.get("service_url", "").strip(),
+        "contact_email": post_data.get("contact_email", "").strip(),
+        "footer_text": post_data.get("footer_text", "").strip(),
+        "copyright_text": post_data.get("copyright_text", "").strip(),
+    }
+
+
 @login_required(login_url="login")
 def send_bulk_email_view(request):
 
@@ -234,6 +249,7 @@ def send_bulk_email_view(request):
     description_image = request.FILES.get("description_image")
     attachments = request.FILES.getlist("attachments")
     email_template = request.POST.get("email_template", "ce")
+    template_data = extract_template_data(request.POST)
 
     if not email_template:
         messages.error(request,"Please select the email template")
@@ -271,41 +287,34 @@ def send_bulk_email_view(request):
 
     df.columns = df.columns.str.strip().str.lower()
 
-    required_columns = [
-        "name",
-        "email",
-    ]
-
-    missing = [c for c in required_columns if c not in df.columns]
-
-    if missing:
-
+    if "email" not in df.columns:
         messages.error(
             request,
-            f"Missing columns: {', '.join(missing)}"
+            f"Missing required column: email (Found: {', '.join(df.columns)})"
         )
-
         return redirect("dashboard")
 
     # Replace any NaN/None values from pandas with empty strings
     df = df.fillna("")
 
+    has_name_col = "name" in df.columns
     recipients = []
 
     for _, row in df.iterrows():
-
-        name = str(row["name"]).strip()
         email = str(row["email"]).strip()
+        name = ""
+        if has_name_col:
+            raw_name = str(row["name"]).strip()
+            if raw_name.lower() != "nan":
+                name = raw_name
 
-        if name and email and name.lower() != "nan" and email.lower() != "nan":
-
+        if email and email.lower() != "nan":
             recipients.append({
                 "name": name,
                 "email": email,
             })
 
     if not recipients:
-
         messages.error(request, "No valid recipients found.")
         return redirect("dashboard")
 
@@ -317,6 +326,7 @@ def send_bulk_email_view(request):
         description_image=description_image,
         attachments=attachments,
         email_template=email_template,
+        template_data=template_data,
     )
 
     messages.success(request, "Emails sent successfully.")
@@ -337,6 +347,7 @@ def send_batch_email_view(request):
     description = request.POST.get("description", "").strip()
     email_template = request.POST.get("email_template", "ce")
     recipients_json = request.POST.get("recipients", "")
+    template_data = extract_template_data(request.POST)
 
     if not subject:
         return JsonResponse({"status": "error", "message": "Subject is required."}, status=400)
@@ -365,6 +376,7 @@ def send_batch_email_view(request):
             description_image=description_image,
             attachments=attachments,
             email_template=email_template,
+            template_data=template_data,
         )
         return JsonResponse({
             "status": "success",
@@ -502,7 +514,9 @@ def email_preview(request):
         description = request.POST.get("description", "")
         has_image = request.POST.get("has_image") == "true"
         
-        if template_name == "ce":
+        if template_name in ["standard", "normal"]:
+            template_path = "standard_email.html"
+        elif template_name == "ce":
             template_path = "CE_email_template.html"
         elif template_name == "functional":
             template_path = "supply_chain_email.html"
@@ -511,16 +525,19 @@ def email_preview(request):
         elif template_name == "CE_supplychainposter":
             template_path = "CE_supplychainposter.html"
         else:
-            template_path = "CE_email_template.html"
+            template_path = "standard_email.html"
             
+        context = {
+            "name": name,
+            "email": email,
+            "description": description,
+            "has_image": has_image,
+        }
+        context.update(extract_template_data(request.POST))
+
         html_content = render_to_string(
             template_path,
-            {
-                "name": name,
-                "email": email,
-                "description": description,
-                "has_image": has_image,
-            },
+            context,
         )
         
         return HttpResponse(html_content)

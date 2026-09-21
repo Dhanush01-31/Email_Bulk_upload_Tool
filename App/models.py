@@ -16,13 +16,21 @@ class EmailLog(models.Model):
     )
 
     recipient_name = models.CharField(
-        max_length=150
+        max_length=150,
+        blank=True,
+        default="",
     )
 
     recipient_email = models.EmailField()
 
     subject = models.CharField(
         max_length=255
+    )
+
+    email_template = models.CharField(
+        max_length=100,
+        blank=True,
+        default="standard",
     )
 
     status = models.CharField(
@@ -40,6 +48,18 @@ class EmailLog(models.Model):
         auto_now_add=True,
     )
 
+    @property
+    def template_display(self):
+        mapping = {
+            "standard": "Standard Email",
+            "normal": "Standard Email",
+            "ce": "CE Template",
+            "functional": "SupplyChain Template",
+            "poster": "Poster Template",
+            "CE_supplychainposter": "CE Supply Chain Poster",
+        }
+        return mapping.get(self.email_template, self.email_template or "Standard Email")
+
     class Meta:
 
         db_table = "email_logs"
@@ -53,4 +73,4 @@ class EmailLog(models.Model):
     def __str__(self):
 
         return f"{self.recipient_email} ({self.status})"
-
+

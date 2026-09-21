@@ -15,9 +15,11 @@ def send_bulk_email_task(
     description_image=None,
     attachments=None,
     email_template="ce",
+    template_data=None,
 ):
 
     connection = get_connection()
+    template_data = template_data or {}
     
     # dev branch
 
@@ -55,67 +57,76 @@ def send_bulk_email_task(
         # Send Email to Each Recipient
         # ----------------------------------
         for recipient in recipients:
+            rec_name = recipient.get("name", "").strip() if recipient.get("name") else ""
+            rec_email = recipient.get("email", "").strip() if recipient.get("email") else ""
+
+            if not rec_email:
+                continue
 
             # -------------------------------
             # Select HTML Template
             # -------------------------------
-            if email_template == "ce":
+            if email_template == "standard" or email_template == "normal":
+                template_name = "standard_email.html"
 
+            elif email_template == "ce":
                 template_name = "CE_email_template.html"
 
             elif email_template == "functional":
-
                 template_name = "supply_chain_email.html"
 
             elif email_template == "poster":
-
                 template_name = "poster.html"
 
             elif email_template == "CE_supplychainposter":
-
                 template_name = "CE_supplychainposter.html"
 
             else:
+                template_name = "standard_email.html"
 
-                template_name = "CE_email_template.html"
+            context = {
+                "name": rec_name,
+                "email": rec_email,
+                "description": description,
+                "has_image": bool(image_bytes),
+            }
+            if template_data:
+                context.update(template_data)
 
             html_content = render_to_string(
                 template_name,
-                {
-                    "name": recipient["name"],
-                    "email": recipient["email"],
-                    "description": description,
-                    "has_image": bool(image_bytes),
-                },
+                context,
             )
-
-            
-
             # -------------------------------
             # Plain Text Version
             # -------------------------------
-            if email_template == "poster":
+            company_name = template_data.get("company_name") or "InESS Solutions"
+            footer_name = template_data.get("footer_text") or company_name
+            cta_t = template_data.get("cta_text")
+            cta_u = template_data.get("cta_url")
+            p_content = template_data.get("poster_content")
 
-                text_content = f"""
-Hello {recipient['name']},
+            cta_block = f"\n\n{cta_t}: {cta_u}" if (cta_t and cta_u) else ""
+            poster_block = f"\n\n{p_content}" if p_content else ""
 
-{description}
+            if email_template in ["standard", "normal"]:
+                greeting = f"Dear {rec_name},\n\n" if rec_name else ""
+                text_content = f"{greeting}{description}{poster_block}{cta_block}"
+            elif email_template == "poster":
+                greeting = f"Hello {rec_name},\n\n" if rec_name else ""
+                text_content = f"""{greeting}{description}{poster_block}{cta_block}
 
 Please view this email in HTML mode to see the poster.
 
 Regards,
-InESS Consulting
+{footer_name}
 """
-
             else:
+                greeting = f"Hello {rec_name},\n\n" if rec_name else ""
+                text_content = f"""{greeting}{description}{poster_block}{cta_block}
 
-                text_content = f"""
-Hello {recipient['name']},
-
-{description}
-
-Regards,
-InESS Consulting
+Best regards,
+{footer_name}
 """
 
             # -------------------------------
@@ -130,7 +141,7 @@ InESS Consulting
                 subject=subject,
                 body=text_content,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[recipient["email"]],
+                to=[rec_email],
                 cc=CC_EMAILS,
                 connection=connection,
             )
@@ -180,9 +191,10 @@ InESS Consulting
 
                 EmailLog.objects.create(
                     sent_by=user,
-                    recipient_name=recipient["name"],
-                    recipient_email=recipient["email"],
+                    recipient_name=rec_name,
+                    recipient_email=rec_email,
                     subject=subject,
+                    email_template=email_template,
                     status="Sent",
                 )
 
@@ -190,9 +202,10 @@ InESS Consulting
 
                 EmailLog.objects.create(
                     sent_by=user,
-                    recipient_name=recipient["name"],
-                    recipient_email=recipient["email"],
+                    recipient_name=rec_name,
+                    recipient_email=rec_email,
                     subject=subject,
+                    email_template=email_template,
                     status="Failed",
                     error_message=str(e),
                 )
