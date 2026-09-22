@@ -24,8 +24,18 @@ from .tasks import send_bulk_email_task
 # Os 
 import os
 import json
+import base64
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
+
+def serialize_uploaded_file(uploaded_file):
+    if not uploaded_file:
+        return None
+    return {
+        "name": uploaded_file.name,
+        "content_type": getattr(uploaded_file, "content_type", "application/octet-stream"),
+        "base64": base64.b64encode(uploaded_file.read()).decode("utf-8"),
+    }
 
 
 User = get_user_model()
@@ -328,8 +338,26 @@ def send_bulk_email_view(request):
         email_template=email_template,
         template_data=template_data,
     )
+    kwargs = {
+        "subject": subject,
+        "description": description,
+        "recipients": recipients,
+        "user_id": request.user.id,
+        "description_image_data": serialize_uploaded_file(description_image),
+        "attachments_data": [serialize_uploaded_file(f) for f in attachments] if attachments else [],
+        "email_template": email_template,
+        "template_data": template_data,
+    }
 
     messages.success(request, "Emails sent successfully.")
+    try:
+        send_bulk_email_task.delay(**kwargs)
+        messages.success(request, "Emails queued for sending successfully.")
+    except Exception as e:
+        # Fallback to direct sending if Redis/Celery fails
+        print(f"Celery delay failed: {e}. Falling back to sync send.")
+        send_bulk_email_task(**kwargs)
+        messages.success(request, "Emails sent successfully.")
 
     return redirect("dashboard")
 

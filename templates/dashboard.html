@@ -548,6 +548,8 @@ Dashboard | Email Upload Tool
 
                 <!-- CAMPAIGN MULTIPART FORM -->
                 <form id="wizardCampaignForm" method="POST" action="{% url 'send_bulk_email' %}"
+                <form id="wizardCampaignForm" novalidate method="POST" action="{% url 'send_bulk_email' %}"
+
                     enctype="multipart/form-data">
                     {% csrf_token %}
 
@@ -1892,6 +1894,17 @@ Build smarter. Source better. Move forward with InESS.`,
             document.getElementById('wizard-submit-btn').disabled = true;
             document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
         }
+    // Handle final form sending via normal form submission (Celery handles background processing)
+    document.getElementById('wizardCampaignForm').addEventListener('submit', function (e) {
+        // Just show the overlay and let the native HTML form submit via POST
+        document.getElementById('wizard-submit-btn').disabled = true;
+        const overlay = document.getElementById('sendingLoaderOverlay');
+        const overlayTitle = document.getElementById('sending-overlay-title');
+        const overlayDesc = document.getElementById('sending-overlay-desc');
+        
+        overlayTitle.innerText = "Queuing Emails in Background...";
+        overlayDesc.innerText = "Please wait, do not close this window...";
+        overlay.classList.remove('d-none');
     });
 
     // Export dashboard logs to CSV/Excel
