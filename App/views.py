@@ -328,16 +328,6 @@ def send_bulk_email_view(request):
         messages.error(request, "No valid recipients found.")
         return redirect("dashboard")
 
-    send_bulk_email_task(
-        subject=subject,
-        description=description,
-        recipients=recipients,
-        user=request.user,
-        description_image=description_image,
-        attachments=attachments,
-        email_template=email_template,
-        template_data=template_data,
-    )
     kwargs = {
         "subject": subject,
         "description": description,
@@ -348,8 +338,6 @@ def send_bulk_email_view(request):
         "email_template": email_template,
         "template_data": template_data,
     }
-
-    messages.success(request, "Emails sent successfully.")
     try:
         send_bulk_email_task.delay(**kwargs)
         messages.success(request, "Emails queued for sending successfully.")

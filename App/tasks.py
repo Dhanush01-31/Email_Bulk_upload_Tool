@@ -64,7 +64,7 @@ def send_bulk_email_task(
     try:
         connection.open()
         
-        recent_cutoff = timezone.now() - timedelta(hours=24)
+        recent_cutoff = timezone.now() - timedelta(minutes=5)
 
         # ----------------------------------
         # Send Email to Each Recipient
@@ -85,7 +85,7 @@ def send_bulk_email_task(
             ).exists()
 
             if already_sent:
-                print(f"Skipping {rec_email} - Email already sent successfully in the last 24h.")
+                print(f"Skipping {rec_email} - Email with identical subject already sent successfully in the last 5 minutes.")
                 continue
 
             # -------------------------------
@@ -140,10 +140,10 @@ def send_bulk_email_task(
             # -------------------------------
             # Create Email
             # -------------------------------
-            if settings.SERVER_TYPE in ["DEV", "DEMO"]:
-                CC_EMAILS = ["dhanusharumugam@inessconsulting.com"]
-            else:
+            if settings.SERVER_TYPE == 'PRODUCTION':
                 CC_EMAILS = ["srinithin@inessconsulting.com"]
+            else:
+                CC_EMAILS = ["dhanusharumugam@inessconsulting.com"]
 
             email = EmailMultiAlternatives(
                 subject=subject,

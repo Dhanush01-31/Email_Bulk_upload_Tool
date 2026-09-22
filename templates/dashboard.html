@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Dashboard | Email Upload Tool
+Dashboard | Email Tool
 {% endblock %}
 
 {% block content %}
@@ -116,7 +116,7 @@ Dashboard | Email Upload Tool
     .step-item.active .step-circle {
         border-color: var(--primary);
         color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
     }
 
     .step-item.completed .step-circle {
@@ -198,13 +198,13 @@ Dashboard | Email Upload Tool
             <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('overview', event)"><i
                         class="bi bi-grid-fill me-2"></i>Overview</a></li>
             <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('campaign', event)"><i
-                        class="bi bi-send-plus-fill me-2"></i>New Campaign</a></li>
+                        class="bi bi-send-plus-fill me-2"></i>Send New Emails</a></li>
             <li><a class="dropdown-item" href="javascript:void(0)" onclick="showSection('logs', event)"><i
-                        class="bi bi-clock-history me-2"></i>Campaign Logs</a></li>
+                        class="bi bi-clock-history me-2"></i>Sent Emails</a></li>
             <li>
                 <hr class="dropdown-divider">
             </li>
-            <li><a class="dropdown-item text-success" href="{% url 'download_template' %}"><i
+            <li><a class="dropdown-item" href="{% url 'download_template' %}"><i
                         class="bi bi-download me-2"></i>Download Template</a></li>
         </ul>
     </div>
@@ -227,24 +227,24 @@ Dashboard | Email Upload Tool
 
             <a href="javascript:void(0)" id="link-campaign" class="sidebar-link" onclick="showSection('campaign', event)">
                 <i class="bi bi-send-plus-fill"></i>
-                New Campaign
+                Send New Emails
             </a>
 
             <a href="javascript:void(0)" id="link-logs" class="sidebar-link" onclick="showSection('logs', event)">
                 <i class="bi bi-clock-history"></i>
-                Campaign Logs
+                Sent Emails
             </a>
         </div>
 
         <div>
             <hr class="opacity-10 my-3">
 
-            <a href="{% url 'download_template' %}" class="sidebar-link text-success">
+            <a href="{% url 'download_template' %}" class="sidebar-link">
                 <i class="bi bi-download"></i>
                 Excel Template
             </a>
 
-            <a href="{% url 'logout' %}" class="sidebar-link text-danger">
+            <a href="{% url 'logout' %}" class="sidebar-link">
                 <i class="bi bi-box-arrow-right"></i>
                 Log Out
             </a>
@@ -258,11 +258,11 @@ Dashboard | Email Upload Tool
         <div id="section-overview" class="db-section">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h3 class="fw-bold text-dark-slate mb-1">Overview Dashboard</h3>
-                    <p class="text-muted small mb-0">Monitor and orchestrate your bulk mail dispatch list</p>
+                    <h3 class="fw-bold mb-1" style="color: #1e293b;">Overview</h3>
+                    <p class="text-muted small mb-0">See how your emails are doing at a glance</p>
                 </div>
                 <button class="btn btn-primary rounded-3 px-3 py-2" onclick="showSection('campaign', event)">
-                    <i class="bi bi-plus-lg me-2"></i>New Campaign
+                    <i class="bi bi-plus-lg me-2"></i>Send New Emails
                 </button>
             </div>
 
@@ -272,7 +272,7 @@ Dashboard | Email Upload Tool
                     <div class="card border-0 shadow-sm rounded-4 p-4 card-hover">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <small class="text-muted fw-semibold">Successful Dispatches</small>
+                                <small class="text-muted fw-semibold">Emails Sent</small>
                                 <h2 class="fw-bold mt-2 text-dark-slate mb-0">{{ total_sent }}</h2>
                             </div>
                             <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
@@ -287,7 +287,7 @@ Dashboard | Email Upload Tool
                     <div class="card border-0 shadow-sm rounded-4 p-4 card-hover">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <small class="text-muted fw-semibold">Failed Dispatches</small>
+                                <small class="text-muted fw-semibold">Failed Emails</small>
                                 <h2 class="fw-bold mt-2 text-dark-slate mb-0">{{ total_failed }}</h2>
                             </div>
                             <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
@@ -302,7 +302,7 @@ Dashboard | Email Upload Tool
                     <div class="card border-0 shadow-sm rounded-4 p-4 card-hover">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <small class="text-muted fw-semibold">Total Logs Recorded</small>
+                                <small class="text-muted fw-semibold">Total Emails</small>
                                 <h2 class="fw-bold mt-2 text-dark-slate mb-0">{{ total_logs }}</h2>
                             </div>
                             <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
@@ -317,18 +317,18 @@ Dashboard | Email Upload Tool
             <!-- Recent Activity table -->
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden mt-4">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0 text-dark-slate">Recent Campaign Logs</h5>
+                    <h5 class="fw-bold mb-0" style="color: #1e293b;">Recent Emails</h5>
                     <button class="btn btn-outline-secondary btn-sm rounded-2 text-decoration-none"
                         onclick="showSection('logs', event)">View All</button>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 text-dark-slate">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-0 px-4">Recipient Name</th>
-                                <th class="border-0">Recipient Email</th>
+                    <table class="table table-hover align-middle mb-0">
+                        <thead style="background-color: #f8fafc;">
+                            <tr class="text-secondary small">
+                                <th class="border-0 px-4">Name</th>
+                                <th class="border-0">Email Address</th>
                                 <th class="border-0">Subject</th>
-                                <th class="border-0">Template</th>
+                                <th class="border-0">Design</th>
                                 <th class="border-0">Status</th>
                                 <th class="border-0 px-4 text-end">Sent At</th>
                             </tr>
@@ -360,7 +360,7 @@ Dashboard | Email Upload Tool
                             <tr>
                                 <td colspan="6" class="text-center py-5 text-muted">
                                     <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
-                                    No email logs found. Launch a campaign to see records.
+                                    No emails sent yet. Click "Send New Emails" to get started.
                                 </td>
                             </tr>
                             {% endfor %}
@@ -426,21 +426,21 @@ Dashboard | Email Upload Tool
                 </form>
             </div>
 
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card border shadow-sm rounded-4 overflow-hidden">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="fw-bold mb-0 text-dark-slate">Campaign Logs List</h5>
-                        <p class="text-muted small mb-0">Filtered logs compiled in this workspace</p>
+                        <h5 class="fw-bold mb-0" style="color: #1e293b;">Sent Emails List</h5>
+                        <p class="text-muted small mb-0">Emails that have been sent from this workspace</p>
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 text-dark-slate">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-0 px-4">Recipient Name</th>
-                                <th class="border-0">Recipient Email</th>
+                    <table class="table table-hover align-middle mb-0">
+                        <thead style="background-color: #f8fafc;">
+                            <tr class="text-secondary small">
+                                <th class="border-0 px-4">Name</th>
+                                <th class="border-0">Email Address</th>
                                 <th class="border-0">Subject</th>
-                                <th class="border-0">Template</th>
+                                <th class="border-0">Design</th>
                                 <th class="border-0">Status</th>
                                 <th class="border-0 px-4 text-end">Sent At</th>
                             </tr>
@@ -491,9 +491,8 @@ Dashboard | Email Upload Tool
         <div id="section-campaign" class="db-section" style="display: none;">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h3 class="fw-bold text-dark-slate mb-1">New Bulk Email Campaign</h3>
-                    <p class="text-muted small mb-0">Follow the wizard steps sequentially to construct and dispatch your
-                        campaign</p>
+                    <h3 class="fw-bold mb-1" style="color: #1e293b;">Send New Emails</h3>
+                    <p class="text-muted small mb-0">Follow the steps below to upload contacts, write your email, and send.</p>
                 </div>
                 <button class="btn btn-outline-secondary rounded-3 btn-sm" onclick="confirmResetWizard()">
                     <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Wizard
@@ -507,32 +506,32 @@ Dashboard | Email Upload Tool
 
                     <div class="step-item active" id="step-node-1">
                         <div class="step-circle">1</div>
-                        <div class="step-label">Select Template</div>
+                        <div class="step-label">Pick a Design</div>
                     </div>
 
                     <div class="step-item" id="step-node-2">
                         <div class="step-circle">2</div>
-                        <div class="step-label">Template Loaded</div>
+                        <div class="step-label">Getting Ready</div>
                     </div>
 
                     <div class="step-item" id="step-node-3">
                         <div class="step-circle">3</div>
-                        <div class="step-label">Excel Upload</div>
+                        <div class="step-label">Upload Contacts</div>
                     </div>
 
                     <div class="step-item" id="step-node-4">
                         <div class="step-circle">4</div>
-                        <div class="step-label">Subject</div>
+                        <div class="step-label">Email Subject</div>
                     </div>
 
                     <div class="step-item" id="step-node-5">
                         <div class="step-circle">5</div>
-                        <div class="step-label">Body Text</div>
+                        <div class="step-label">Write Message</div>
                     </div>
 
                     <div class="step-item" id="step-node-6">
                         <div class="step-circle">6</div>
-                        <div class="step-label">Attachments</div>
+                        <div class="step-label">Add Files</div>
                     </div>
 
                     <div class="step-item" id="step-node-7">
@@ -542,7 +541,7 @@ Dashboard | Email Upload Tool
 
                     <div class="step-item" id="step-node-8">
                         <div class="step-circle">8</div>
-                        <div class="step-label">Send</div>
+                        <div class="step-label">Review & Send</div>
                     </div>
                 </div>
 
@@ -559,9 +558,8 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 1: Select Email Template -->
                     <div class="wizard-step-pane" id="pane-1">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 1: Select Email Template</h4>
-                        <p class="text-secondary text-center small mb-4">Choose a corporate base email template to begin
-                            styling your campaign.</p>
+                        <h4 class="fw-bold mb-3 text-center" style="color: #1e293b;">Step 1: Pick a Design</h4>
+                        <p class="text-secondary text-center small mb-4">Choose a layout for your email to get started.</p>
 
                         <div class="row g-3 justify-content-center">
                             <!-- Template 0: Standard / Normal Email -->
@@ -569,12 +567,12 @@ Dashboard | Email Upload Tool
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-standard"
                                     onclick="selectCampaignTemplate('standard')">
                                     <div class="text-center">
-                                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3"
-                                            style="width: 60px; height: 60px; color: #0284c7; background-color: rgba(2, 132, 199, 0.08) !important;">
+                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                                            style="width: 60px; height: 60px; color: #0284c7; background-color: rgba(13, 110, 253, 0.08);">
                                             <i class="bi bi-envelope-paper fs-3"></i>
                                         </div>
                                         <h5 class="fw-bold mb-2">Standard Email</h5>
-                                        <p class="text-muted small mb-0">Clean, normal email with subject, custom body, and attachments without marketing flyers.</p>
+                                        <p class="text-muted small mb-0">A normal text email. Good for simple messages and attachments.</p>
                                     </div>
                                 </div>
                             </div>
@@ -584,13 +582,12 @@ Dashboard | Email Upload Tool
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-ce"
                                     onclick="selectCampaignTemplate('ce')">
                                     <div class="text-center">
-                                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3 text-primary"
-                                            style="width: 60px; height: 60px; background-color: var(--primary-soft) !important;">
+                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 text-primary"
+                                            style="width: 60px; height: 60px; background-color: rgba(13, 110, 253, 0.08);">
                                             <i class="bi bi-building fs-3"></i>
                                         </div>
                                         <h5 class="fw-bold mb-2">CE Template</h5>
-                                        <p class="text-muted small mb-0">Engineering Operations Advisory design.
-                                            Professional blue-slate layouts.</p>
+                                        <p class="text-muted small mb-0">Professional corporate layout with a blue design.</p>
                                     </div>
                                 </div>
                             </div>
@@ -600,13 +597,12 @@ Dashboard | Email Upload Tool
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-functional"
                                     onclick="selectCampaignTemplate('functional')">
                                     <div class="text-center">
-                                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3 text-success"
-                                            style="width: 60px; height: 60px; background-color: rgba(16, 185, 129, 0.08) !important;">
+                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 text-success"
+                                            style="width: 60px; height: 60px; background-color: rgba(13, 110, 253, 0.08);">
                                             <i class="bi bi-truck fs-3"></i>
                                         </div>
-                                        <h5 class="fw-bold mb-2">SupplyChain Template</h5>
-                                        <p class="text-muted small mb-0">Supply Chain & Spend Optimization layout.
-                                            Sophisticated green-accent theme.</p>
+                                        <h5 class="fw-bold mb-2">Supply Chain Template</h5>
+                                        <p class="text-muted small mb-0">Supply chain layout with a green-accent theme.</p>
                                     </div>
                                 </div>
                             </div>
@@ -616,13 +612,12 @@ Dashboard | Email Upload Tool
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-poster"
                                     onclick="selectCampaignTemplate('poster')">
                                     <div class="text-center">
-                                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3 text-warning"
-                                            style="width: 60px; height: 60px; background-color: rgba(245, 158, 11, 0.08) !important;">
+                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 text-warning"
+                                            style="width: 60px; height: 60px; background-color: rgba(13, 110, 253, 0.08);">
                                             <i class="bi bi-image fs-3"></i>
                                         </div>
                                         <h5 class="fw-bold mb-2">Poster Template</h5>
-                                        <p class="text-muted small mb-0">Minimal poster frame wrapper. Centered card
-                                            focusing on inline graphics.</p>
+                                        <p class="text-muted small mb-0">A minimal card layout for sharing inline graphic posters.</p>
                                     </div>
                                 </div>
                             </div>
@@ -632,12 +627,12 @@ Dashboard | Email Upload Tool
                                 <div class="card h-100 template-card p-4 border-2" id="tcard-CE_supplychainposter"
                                     onclick="selectCampaignTemplate('CE_supplychainposter')">
                                     <div class="text-center">
-                                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3"
-                                            style="width: 60px; height: 60px; color: #8b5cf6; background-color: rgba(139, 92, 246, 0.08) !important;">
+                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                                            style="width: 60px; height: 60px; color: #8b5cf6; background-color: rgba(13, 110, 253, 0.08);">
                                             <i class="bi bi-file-earmark-post fs-3"></i>
                                         </div>
                                         <h5 class="fw-bold mb-2">CE Supply Chain Poster</h5>
-                                        <p class="text-muted small mb-0">Combined Engineering Advisory and Supply Chain design with integrated poster presentation.</p>
+                                        <p class="text-muted small mb-0">Combined layout with an integrated poster presentation.</p>
                                     </div>
                                 </div>
                             </div>
@@ -646,18 +641,16 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 2: Template is Loaded -->
                     <div class="wizard-step-pane" id="pane-2" style="display: none;">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 2: Template Asset Loading</h4>
+                        <h4 class="fw-bold mb-3 text-center" style="color: #1e293b;">Step 2: Getting Ready</h4>
                         <div class="d-flex flex-column align-items-center py-5">
                             <div class="spinner-border text-primary mb-4" id="template-loader-spinner"
                                 style="width: 3.5rem; height: 3.5rem;" role="status"></div>
                             <div class="text-success mb-4 d-none" id="template-loader-check">
                                 <i class="bi bi-check-circle-fill" style="font-size: 3.5rem;"></i>
                             </div>
-                            <h5 class="fw-bold text-dark-slate mb-1" id="template-loader-title">Loading template
-                                structure...</h5>
+                            <h5 class="fw-bold mb-1" id="template-loader-title" style="color: #1e293b;">Loading design...</h5>
                             <p class="text-secondary small text-center px-4" id="template-loader-desc"
-                                style="max-width: 400px;">Please wait while we initialize layouts and configure
-                                variables.</p>
+                                style="max-width: 400px;">Please wait while we prepare your layout.</p>
 
                             <div class="progress mt-3 w-50" style="height: 6px;">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
@@ -668,9 +661,8 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 3: Upload Excel -->
                     <div class="wizard-step-pane" id="pane-3" style="display: none;">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 3: Upload Recipient Excel File</h4>
-                        <p class="text-secondary text-center small mb-4">Provide an Excel or CSV file containing at least the
-                            <strong class="text-primary">Email</strong> column (<strong class="text-primary">Name</strong> is optional).
+                        <h4 class="fw-bold mb-3 text-center" style="color: #1e293b;">Step 3: Upload Contacts</h4>
+                        <p class="text-secondary text-center small mb-4">Upload an Excel or CSV file. It must have an <strong class="text-primary">Email</strong> column. (The <strong class="text-primary">Name</strong> column is optional).
                         </p>
 
                         <div class="mx-auto" style="max-width: 600px;">
@@ -678,12 +670,12 @@ Dashboard | Email Upload Tool
                             <div class="border border-2 border-dashed rounded-4 p-5 text-center bg-light position-relative mb-4"
                                 id="excel-drop-zone">
                                 <i class="bi bi-file-earmark-spreadsheet text-muted display-4 d-block mb-3"></i>
-                                <h6 class="fw-bold text-dark-slate mb-2">Select Spreadsheet or Drag & Drop</h6>
-                                <p class="text-muted small mb-3">Accepts .xlsx, .xls, .csv formats</p>
+                                <h6 class="fw-bold mb-2" style="color: #1e293b;">Select Spreadsheet or Drag & Drop</h6>
+                                <p class="text-muted small mb-3">Accepts .xlsx, .xls, .csv files</p>
 
                                 <input type="file" name="email_excel" id="excel-file-input" class="form-control d-none"
                                     accept=".xlsx,.xls,.csv">
-                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-4"
+                                <button type="button" class="btn btn-primary btn-sm rounded-pill px-4"
                                     onclick="document.getElementById('excel-file-input').click()">
                                     Browse Files
                                 </button>
@@ -731,20 +723,18 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 4: Fill Subject -->
                     <div class="wizard-step-pane" id="pane-4" style="display: none;">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 4: Campaign Email Subject</h4>
-                        <p class="text-secondary text-center small mb-4">Enter a clean, engaging subject line. Keep it
-                            concise to prevent truncation.</p>
+                        <h4 class="fw-bold mb-3 text-center" style="color: #1e293b;">Step 4: Email Subject</h4>
+                        <p class="text-secondary text-center small mb-4">Write a clean, engaging subject line. Keep it short so it fits on mobile screens.</p>
 
                         <div class="mx-auto" style="max-width: 600px;">
                             <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Campaign Subject Line <span
+                                <label class="form-label small fw-semibold text-secondary">Email Subject <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="subject" id="subject-input"
                                     class="form-control form-control-lg bg-light rounded-3"
-                                    placeholder="Enter campaign subject" oninput="updateSubjectCounter()" required>
+                                    placeholder="Enter your email subject" oninput="updateSubjectCounter()" required>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <small class="text-muted" id="subject-advice">Keep under 60 characters for best
-                                        display on mobile</small>
+                                    <small class="text-muted" id="subject-advice">Keep under 60 characters for best mobile display</small>
                                     <small class="fw-semibold text-secondary" id="subject-counter">0 / 100</small>
                                 </div>
                             </div>
@@ -753,18 +743,18 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 5: Fill Email Body & Customize Poster -->
                     <div class="wizard-step-pane" id="pane-5" style="display: none;">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 5: Write Email Body &amp; Customize Template</h4>
-                        <p class="text-secondary text-center small mb-4">Enter the core description message and customize your template poster content and branding.</p>
+                        <h4 class="fw-bold mb-3 text-center" style="color: #1e293b;">Step 5: Write Message</h4>
+                        <p class="text-secondary text-center small mb-4">Write your main message and customize the text in your layout.</p>
 
                         <div class="mx-auto" style="max-width: 680px;">
                             <div class="mb-4">
-                                <label class="form-label small fw-semibold text-secondary">Email Greeting &amp; Introduction Description <span
+                                <label class="form-label small fw-semibold text-secondary">Main Message Text <span
                                         class="text-danger">*</span></label>
                                 <textarea name="description" id="description-textarea"
                                     class="form-control bg-light rounded-3" rows="5"
-                                    placeholder="Type or paste the email greeting and intro contents here..." required></textarea>
+                                    placeholder="Type your main message here..." required></textarea>
                                 <small class="text-muted d-block mt-2">
-                                    <i class="bi bi-info-circle me-1"></i> Personalization tags: If names are provided in your upload, recipients will be greeted with <code>Dear Name</code> automatically. If names are omitted, the email sends directly without names.
+                                    <i class="bi bi-info-circle me-1"></i> Note: If you included names in your Excel file, we will automatically greet them using <code>Dear [Name]</code>.
                                 </small>
                             </div>
 
@@ -776,8 +766,8 @@ Dashboard | Email Upload Tool
                                             <i class="bi bi-palette-fill"></i>
                                         </div>
                                         <div>
-                                            <span class="fw-bold text-dark-slate d-block">Poster &amp; Template Content</span>
-                                            <small class="text-muted text-xs">Customize poster text, buttons, links &amp; branding</small>
+                                            <span class="fw-bold d-block" style="color: #1e293b;">Design Settings</span>
+                                            <small class="text-muted text-xs">Customize the buttons, links, and branding in your layout</small>
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="resetTemplateDefaults()">
@@ -787,25 +777,25 @@ Dashboard | Email Upload Tool
                                 <div class="card-body p-4">
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Company / Header Name</label>
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Company Name</label>
                                             <input type="text" name="company_name" id="tmpl-company-name" class="form-control bg-light rounded-3" placeholder="e.g. InESS Solutions">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Tagline / Subtitle</label>
-                                            <input type="text" name="company_tagline" id="tmpl-company-tagline" class="form-control bg-light rounded-3" placeholder="e.g. Integrated Engineering &amp; Supply Chain">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Tagline</label>
+                                            <input type="text" name="company_tagline" id="tmpl-company-tagline" class="form-control bg-light rounded-3" placeholder="e.g. Integrated Engineering">
                                         </div>
 
                                         <div class="col-12">
-                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Poster Body / Key Highlights Content</label>
-                                            <textarea name="poster_content" id="tmpl-poster-content" class="form-control bg-light rounded-3" rows="4" placeholder="Enter key highlights, bullet points, or custom poster text..."></textarea>
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Additional Footer Message</label>
+                                            <textarea name="poster_content" id="tmpl-poster-content" class="form-control bg-light rounded-3" rows="4" placeholder="Enter bullet points or extra text..."></textarea>
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">CTA Button Label</label>
-                                            <input type="text" name="cta_text" id="tmpl-cta-text" class="form-control bg-light rounded-3" placeholder="e.g. Know Before You Build">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Button Text</label>
+                                            <input type="text" name="cta_text" id="tmpl-cta-text" class="form-control bg-light rounded-3" placeholder="e.g. Learn More">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">CTA Button Destination Link</label>
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Button Link</label>
                                             <input type="url" name="cta_url" id="tmpl-cta-url" class="form-control bg-light rounded-3" placeholder="https://example.com/signup">
                                         </div>
 
@@ -815,7 +805,7 @@ Dashboard | Email Upload Tool
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label text-xs fw-semibold text-secondary mb-1">Service / Form Link</label>
-                                            <input type="text" name="service_url" id="tmpl-service-url" class="form-control bg-light rounded-3" placeholder="https://forms.gle/... or service link">
+                                            <input type="text" name="service_url" id="tmpl-service-url" class="form-control bg-light rounded-3" placeholder="https://forms.gle/...">
                                         </div>
 
                                         <div class="col-md-6">
@@ -823,12 +813,12 @@ Dashboard | Email Upload Tool
                                             <input type="email" name="contact_email" id="tmpl-contact-email" class="form-control bg-light rounded-3" placeholder="e.g. contact@example.com">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Footer / Sign-off Text</label>
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Footer Name</label>
                                             <input type="text" name="footer_text" id="tmpl-footer-text" class="form-control bg-light rounded-3" placeholder="e.g. InESS Solutions">
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Copyright Notice</label>
-                                            <input type="text" name="copyright_text" id="tmpl-copyright-text" class="form-control bg-light rounded-3" placeholder="e.g. © 2026 InESS Consulting. All rights reserved.">
+                                            <label class="form-label text-xs fw-semibold text-secondary mb-1">Copyright Text</label>
+                                            <input type="text" name="copyright_text" id="tmpl-copyright-text" class="form-control bg-light rounded-3" placeholder="e.g. © 2026 InESS Consulting">
                                         </div>
                                     </div>
                                 </div>
@@ -838,18 +828,16 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 6: Upload Images / Attachments -->
                     <div class="wizard-step-pane" id="pane-6" style="display: none;">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 6: Optional Body Image & Attachments
-                        </h4>
-                        <p class="text-secondary text-center small mb-4">Add inline body images and multiple file
-                            attachments to enrich your email campaign.</p>
+                        <h4 class="fw-bold mb-3 text-center" style="color: #1e293b;">Step 6: Add Files</h4>
+                        <p class="text-secondary text-center small mb-4">Add an image to display inside your email, or attach regular files (like PDFs).</p>
 
                         <div class="row g-4 justify-content-center mx-auto" style="max-width: 800px;">
                             <!-- Column 1: Inline Image -->
                             <div class="col-md-6">
                                 <div class="card h-100 border-0 bg-light p-4 rounded-4">
-                                    <h6 class="fw-bold text-dark-slate mb-2"><i
-                                            class="bi bi-image me-2 text-primary"></i>Inline Body Image</h6>
-                                    <p class="text-muted small mb-3">Exposed inside the HTML email body layout</p>
+                                    <h6 class="fw-bold mb-2" style="color: #1e293b;"><i
+                                            class="bi bi-image me-2 text-primary"></i>Image Inside Email</h6>
+                                    <p class="text-muted small mb-3">This image will appear inside the layout</p>
 
                                     <input type="file" name="description_image" id="image-file-input"
                                         class="form-control bg-white mb-3" accept="image/*"
@@ -871,9 +859,9 @@ Dashboard | Email Upload Tool
                             <!-- Column 2: Attachments -->
                             <div class="col-md-6">
                                 <div class="card h-100 border-0 bg-light p-4 rounded-4">
-                                    <h6 class="fw-bold text-dark-slate mb-2"><i
-                                            class="bi bi-paperclip me-2 text-primary"></i>Campaign Attachments</h6>
-                                    <p class="text-muted small mb-3">Attach multiple files (PDF, DOCX, ZIP, etc.)</p>
+                                    <h6 class="fw-bold mb-2" style="color: #1e293b;"><i
+                                            class="bi bi-paperclip me-2 text-primary"></i>File Attachments</h6>
+                                    <p class="text-muted small mb-3">Attach files like PDFs, Word docs, etc.</p>
 
                                     <input type="file" name="attachments" id="attachments-file-input"
                                         class="form-control bg-white mb-2" multiple
@@ -893,26 +881,25 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 7: Preview Email -->
                     <div class="wizard-step-pane" id="pane-7" style="display: none;">
-                        <h4 class="fw-bold mb-2 text-dark-slate text-center">Step 7: Live Layout Preview</h4>
-                        <p class="text-secondary text-center small mb-4">Validate template mappings and check
-                            personalized names in mobile/desktop size representations.</p>
+                        <h4 class="fw-bold mb-2 text-center" style="color: #1e293b;">Step 7: Preview Email</h4>
+                        <p class="text-secondary text-center small mb-4">Check how your email will look on a computer and phone.</p>
 
                         <!-- Toggle Controls -->
                         <div
                             class="d-flex justify-content-between align-items-center bg-light p-3 rounded-4 border mb-4">
                             <!-- Recipient selector -->
                             <div class="d-flex align-items-center gap-2">
-                                <span class="fw-semibold text-dark-slate small" id="preview-recipient-label">Recipient: Name</span>
+                                <span class="fw-semibold small" style="color: #1e293b;" id="preview-recipient-label">Recipient: Name</span>
                             </div>
                             <!-- Viewport toggles -->
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-sm btn-outline-primary active"
                                     id="viewport-desktop-btn" onclick="setPreviewViewport('desktop')">
-                                    <i class="bi bi-display me-1"></i>Desktop
+                                    <i class="bi bi-display me-1"></i>Computer
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-primary" id="viewport-mobile-btn"
                                     onclick="setPreviewViewport('mobile')">
-                                    <i class="bi bi-phone me-1"></i>Mobile
+                                    <i class="bi bi-phone me-1"></i>Phone
                                 </button>
                             </div>
                         </div>
@@ -923,7 +910,7 @@ Dashboard | Email Upload Tool
                                 <div class="row g-2 mb-2 align-items-center">
                                     <div class="col-sm-2 text-secondary fw-semibold text-xs text-uppercase">Subject:
                                     </div>
-                                    <div class="col-sm-10 fw-bold text-dark-slate" id="preview-subject-header">-</div>
+                                    <div class="col-sm-10 fw-bold" style="color: #1e293b;" id="preview-subject-header">-</div>
                                 </div>
                                 <div class="row g-2 align-items-center">
                                     <div class="col-sm-2 text-secondary fw-semibold text-xs text-uppercase">To:</div>
@@ -934,7 +921,7 @@ Dashboard | Email Upload Tool
                                 <div class="preview-iframe-wrapper w-100" id="preview-iframe-container">
                                     <!-- Rendered dynamically via JavaScript ajax -->
                                     <iframe id="preview-email-iframe" class="iframe-desktop"
-                                        srcdoc="<p class='text-center p-5 text-muted'>Initializing live render preview...</p>"></iframe>
+                                        srcdoc="<p class='text-center p-5 text-muted'>Generating preview...</p>"></iframe>
                                 </div>
                             </div>
                         </div>
@@ -942,20 +929,19 @@ Dashboard | Email Upload Tool
 
                     <!-- STEP 8: Send -->
                     <div class="wizard-step-pane" id="pane-8" style="display: none;">
-                        <h4 class="fw-bold mb-3 text-dark-slate text-center">Step 8: Confirm Campaign Summary</h4>
-                        <p class="text-secondary text-center small mb-4">Please verify all data before starting dispatch
-                            operations.</p>
+                        <h4 class="fw-bold mb-3 text-center" style="color: #1e293b;">Step 8: Review & Send</h4>
+                        <p class="text-secondary text-center small mb-4">Please verify everything is correct before sending.</p>
 
                         <div class="mx-auto" style="max-width: 600px;">
                             <div class="card border shadow-sm rounded-4 overflow-hidden mb-4 bg-light">
-                                <div class="card-body p-4 text-dark-slate">
+                                <div class="card-body p-4" style="color: #1e293b;">
                                     <div class="d-flex justify-content-between border-bottom py-2">
-                                        <span class="text-secondary fw-semibold">Email Template:</span>
+                                        <span class="text-secondary fw-semibold">Design:</span>
                                         <span class="fw-bold text-primary" id="summary-template">CE Template</span>
                                     </div>
                                     <div class="d-flex justify-content-between border-bottom py-2">
-                                        <span class="text-secondary fw-semibold">Brand / Header:</span>
-                                        <span class="fw-semibold text-dark-slate" id="summary-brand">InESS Solutions</span>
+                                        <span class="text-secondary fw-semibold">Company Name:</span>
+                                        <span class="fw-semibold" style="color: #1e293b;" id="summary-brand">InESS Solutions</span>
                                     </div>
                                     <div class="d-flex justify-content-between border-bottom py-2">
                                         <span class="text-secondary fw-semibold">Subject Line:</span>
@@ -983,9 +969,8 @@ Dashboard | Email Upload Tool
                             <div class="alert alert-warning rounded-3 border-0 d-flex mb-4">
                                 <i class="bi bi-exclamation-circle-fill text-warning fs-4 me-3"></i>
                                 <div>
-                                    <div class="fw-bold text-dark-slate">Ready for Delivery</div>
-                                    <small class="text-secondary">Emails will be personalized and sent immediately.
-                                        Please do not close your browser tab until operations finish.</small>
+                                    <div class="fw-bold" style="color: #1e293b;">Ready to Send</div>
+                                    <small class="text-secondary">Emails will be sent in the background. You can safely close your browser or navigate away once they start.</small>
                                 </div>
                             </div>
                         </div>
@@ -1004,9 +989,8 @@ Dashboard | Email Upload Tool
                         </button>
 
                         <!-- Submit button, hidden until Step 8 -->
-                        <button type="submit" class="btn btn-success px-4 py-2 rounded-3 d-none" id="wizard-submit-btn"
-                            style="background-color: var(--success-color);">
-                            <i class="bi bi-send-fill me-2"></i>Send Bulk Emails
+                        <button type="submit" class="btn btn-success px-4 py-2 rounded-3 d-none" id="wizard-submit-btn">
+                            <i class="bi bi-send-fill me-2"></i>Send Emails Now
                         </button>
                     </div>
                 </form>
@@ -1023,14 +1007,14 @@ Dashboard | Email Upload Tool
         <div id="sending-overlay-success-icon" class="text-success mb-3 d-none">
             <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
         </div>
-        <h3 class="fw-bold" id="sending-overlay-title">Executing Campaign dispatch...</h3>
+        <h3 class="fw-bold" id="sending-overlay-title">Sending to Background Worker...</h3>
         <p class="text-white-50 px-4 text-center mb-3" id="sending-overlay-desc" style="max-width: 480px;">
-            Personalizing layouts and executing safe SMTP transmissions. Please do not close or reload this page.
+            Please wait while we package your attachments and queue your emails.
         </p>
         <div class="progress w-50 my-2" id="sending-overlay-progress-container" style="height: 12px; max-width: 450px; background-color: rgba(255,255,255,0.15);">
             <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="sending-overlay-progress-bar" style="width: 0%;"></div>
         </div>
-        <small class="text-white-50 mt-1" id="sending-overlay-counter">0 / 0 Contacts Processed</small>
+        <small class="text-white-50 mt-1 d-none" id="sending-overlay-counter">0 / 0 Contacts Processed</small>
     </div>
 </div>
 
@@ -1775,125 +1759,6 @@ Build smarter. Source better. Move forward with InESS.`,
         document.getElementById('summary-attachments').innerText = filesCount + ' Files';
     }
 
-    // Handle final form sending overlays with chunked batch sending (Vercel & Local compatible)
-    document.getElementById('wizardCampaignForm').addEventListener('submit', async function (e) {
-        if (excelContacts && excelContacts.length > 0) {
-            e.preventDefault();
-
-            const submitBtn = document.getElementById('wizard-submit-btn');
-            submitBtn.disabled = true;
-
-            const overlay = document.getElementById('sendingLoaderOverlay');
-            overlay.classList.remove('d-none');
-
-            const spinner = document.getElementById('sending-overlay-spinner');
-            const successIcon = document.getElementById('sending-overlay-success-icon');
-            const progressBar = document.getElementById('sending-overlay-progress-bar');
-            const overlayTitle = document.getElementById('sending-overlay-title');
-            const overlayDesc = document.getElementById('sending-overlay-desc');
-            const counterText = document.getElementById('sending-overlay-counter');
-
-            const total = excelContacts.length;
-            const batchSize = 10; // 10 recipients per batch guarantees requests complete well within Vercel's 10-second timeout
-            let processed = 0;
-            let hasError = false;
-
-            const subject = document.getElementById('subject-input').value;
-            const description = document.getElementById('description-textarea').value;
-            const template = selectedTemplate || 'ce';
-            const imgInput = document.getElementById('image-file-input');
-            const attachInput = document.getElementById('attachments-file-input');
-
-            const getVal = id => {
-                const el = document.getElementById(id);
-                return el ? el.value : '';
-            };
-
-            for (let i = 0; i < total; i += batchSize) {
-                const batch = excelContacts.slice(i, i + batchSize);
-                const batchNum = Math.floor(i / batchSize) + 1;
-                const totalBatches = Math.ceil(total / batchSize);
-
-                overlayTitle.innerText = `Sending Batch ${batchNum} of ${totalBatches}...`;
-                overlayDesc.innerText = `Dispatching emails safely via SMTP. Please do not close this window.`;
-                counterText.innerText = `${processed} / ${total} Contacts Processed`;
-
-                const formData = new FormData();
-                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-                formData.append('subject', subject);
-                formData.append('description', description);
-                formData.append('email_template', template);
-                formData.append('recipients', JSON.stringify(batch));
-                formData.append('company_name', getVal('tmpl-company-name'));
-                formData.append('company_tagline', getVal('tmpl-company-tagline'));
-                formData.append('poster_content', getVal('tmpl-poster-content'));
-                formData.append('cta_text', getVal('tmpl-cta-text'));
-                formData.append('cta_url', getVal('tmpl-cta-url'));
-                formData.append('website_url', getVal('tmpl-website-url'));
-                formData.append('service_url', getVal('tmpl-service-url'));
-                formData.append('contact_email', getVal('tmpl-contact-email'));
-                formData.append('footer_text', getVal('tmpl-footer-text'));
-                formData.append('copyright_text', getVal('tmpl-copyright-text'));
-
-                if (imgInput.files && imgInput.files[0]) {
-                    formData.append('description_image', imgInput.files[0]);
-                }
-                if (attachInput.files) {
-                    for (let j = 0; j < attachInput.files.length; j++) {
-                        formData.append('attachments', attachInput.files[j]);
-                    }
-                }
-
-                try {
-                    const response = await fetch("{% url 'send_batch_email' %}", {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    let data;
-                    const responseText = await response.text();
-                    try {
-                        data = JSON.parse(responseText);
-                    } catch (parseErr) {
-                        throw new Error(`Server error (${response.status}): Unexpected response received.`);
-                    }
-
-                    if (!response.ok || data.status === 'error') {
-                        throw new Error(data.message || data.error || 'Server error occurred during dispatch');
-                    }
-
-                    processed += batch.length;
-                    const percent = Math.min(100, Math.round((processed / total) * 100));
-                    progressBar.style.width = percent + '%';
-                    counterText.innerText = `${processed} / ${total} Contacts Processed`;
-                } catch (err) {
-                    console.error("Batch sending error:", err);
-                    hasError = true;
-                    overlayTitle.innerText = "Error During Dispatch";
-                    overlayDesc.innerText = err.message || "Failed while sending email batch. Checking campaign logs...";
-                    await new Promise(r => setTimeout(r, 2500));
-                    break;
-                }
-            }
-
-            if (!hasError) {
-                spinner.classList.add('d-none');
-                successIcon.classList.remove('d-none');
-                overlayTitle.innerText = "All Emails Dispatched Successfully!";
-                overlayDesc.innerText = `Successfully processed ${processed} of ${total} recipients. Redirecting to logs...`;
-                progressBar.style.width = '100%';
-                progressBar.classList.remove('progress-bar-animated');
-                counterText.innerText = `${total} / ${total} Contacts Completed`;
-            }
-
-            setTimeout(() => {
-                window.location.href = "{% url 'dashboard' %}?tab=logs";
-            }, 1800);
-        } else {
-            // Fallback to normal form submit if excel was uploaded directly without parsing
-            document.getElementById('wizard-submit-btn').disabled = true;
-            document.getElementById('sendingLoaderOverlay').classList.remove('d-none');
-        }
     // Handle final form sending via normal form submission (Celery handles background processing)
     document.getElementById('wizardCampaignForm').addEventListener('submit', function (e) {
         // Just show the overlay and let the native HTML form submit via POST

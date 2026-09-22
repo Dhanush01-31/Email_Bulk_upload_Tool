@@ -1,26 +1,24 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Register | Email Upload Tool
+Sign Up | Email Tool
 {% endblock %}
 
 {% block content %}
 <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
     <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
-        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-            <!-- Decorative colored bar on top -->
-            <div style="height: 5px; background: linear-gradient(90deg, #10b981 0%, #34d399 100%);"></div>
+        <div class="card shadow-sm border rounded-4 overflow-hidden">
             
             <div class="card-body p-5">
                 <div class="text-center mb-4">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 72px; height: 72px; background-color: rgba(16, 185, 129, 0.08) !important;">
-                        <i class="bi bi-person-plus text-success" style="font-size: 32px;"></i>
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 72px; height: 72px; background-color: rgba(13, 110, 253, 0.06);">
+                        <i class="bi bi-person-plus text-primary" style="font-size: 32px;"></i>
                     </div>
-                    <h3 class="fw-bold tracking-tight text-dark-slate mb-1">
+                    <h3 class="fw-bold mb-1" style="color: #1e293b;">
                         Create an account
                     </h3>
                     <p class="text-muted small">
-                        Start sending personalized bulk emails
+                        Create your account to get started
                     </p>
                 </div>
 
@@ -33,13 +31,13 @@ Register | Email Upload Tool
                             Username
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-white text-muted">
                                 <i class="bi bi-person"></i>
                             </span>
                             <input
                                 type="text"
                                 name="username"
-                                class="form-control border-start-0 bg-light"
+                                class="form-control"
                                 placeholder="Choose a username"
                                 required>
                         </div>
@@ -51,13 +49,13 @@ Register | Email Upload Tool
                             Email Address
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-white text-muted">
                                 <i class="bi bi-envelope"></i>
                             </span>
                             <input
                                 type="email"
                                 name="email"
-                                class="form-control border-start-0 bg-light"
+                                class="form-control"
                                 placeholder="Enter your email address"
                                 required>
                         </div>
@@ -69,13 +67,13 @@ Register | Email Upload Tool
                             Password
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-white text-muted">
                                 <i class="bi bi-lock"></i>
                             </span>
                             <input
                                 type="password"
                                 name="password"
-                                class="form-control border-start-0 bg-light"
+                                class="form-control"
                                 placeholder="Create a strong password"
                                 required>
                         </div>
@@ -87,23 +85,23 @@ Register | Email Upload Tool
                             Confirm Password
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-white text-muted">
                                 <i class="bi bi-shield-lock"></i>
                             </span>
                             <input
                                 type="password"
                                 name="confirm_password"
-                                class="form-control border-start-0 bg-light"
+                                class="form-control"
                                 placeholder="Repeat your password"
                                 required>
                         </div>
                     </div>
 
                     <!-- Submit -->
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success py-2.5 rounded-3 border-0" style="background-color: var(--success-color);">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary py-2 rounded-3">
                             <i class="bi bi-person-check me-2"></i>
-                            Register Account
+                            Create Account
                         </button>
                     </div>
                 </form>

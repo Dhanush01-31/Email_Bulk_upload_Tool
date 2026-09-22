@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -221,3 +221,5 @@ CELERY_TIMEZONE = TIME_ZONE
 # FAULT TOLERANCE: Prevent data loss if the AWS Server crashes mid-send.
 # Task stays in Redis until completely finished!
 CELERY_ACKS_LATE = True
+
+# ------------------------------------------------------------------------------

@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Email Logs | Email Upload Tool
+Sent Emails History | Email Tool
 {% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <!-- Header Page Title -->
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold text-dark-slate mb-1">
+            <h3 class="fw-bold mb-1" style="color: #1e293b;">
                 <i class="bi bi-clock-history me-2 text-primary"></i>
-                Detailed Email Dispatch Logs
+                Sent Emails History
             </h3>
             <p class="text-muted small mb-0">
-                View all previous bulk campaign transmission reports and error stack traces
+                See all the emails you have sent, along with who received them and when.
             </p>
         </div>
         <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded-3 px-3 py-2">
@@ -22,8 +22,8 @@ Email Logs | Email Upload Tool
         </a>
     </div>
 
-    <!-- Filters and Exports Section -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+    <!-- Filters -->
+    <div class="card border shadow-sm rounded-4 p-4 mb-4">
         <form method="GET" action="{% url 'email_logs' %}" id="logs-filter-form">
             <div class="row g-3 align-items-end">
                 <div class="col-md-3">
@@ -35,9 +35,9 @@ Email Logs | Email Upload Tool
                     <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small fw-semibold text-secondary">Delivery Status</label>
+                    <label class="form-label small fw-semibold text-secondary">Status</label>
                     <select name="status" class="form-select">
-                        <option value="" {% if not status %}selected{% endif %}>All Statuses</option>
+                        <option value="" {% if not status %}selected{% endif %}>All</option>
                         <option value="Sent" {% if status == "Sent" %}selected{% endif %}>Sent Only</option>
                         <option value="Failed" {% if status == "Failed" %}selected{% endif %}>Failed Only</option>
                     </select>
@@ -52,42 +52,42 @@ Email Logs | Email Upload Tool
                 </div>
             </div>
             
-            <hr class="my-3 opacity-10">
+            <hr class="my-3" style="opacity: 0.1;">
             
             <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
                 <div class="text-secondary small">
                     {% if logs.paginator.count > 0 %}
-                    Found <span class="fw-bold text-dark">{{ logs.paginator.count }}</span> matching records.
+                    Found <span class="fw-bold" style="color: #1e293b;">{{ logs.paginator.count }}</span> records.
                     {% endif %}
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="exportLogs(false)">
-                        <i class="bi bi-file-earmark-excel me-1"></i>Export Filtered
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="exportLogs(false)">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Download Filtered
                     </button>
-                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="exportLogs(true)">
-                        <i class="bi bi-file-earmark-excel-fill me-1"></i>Export All Records
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="exportLogs(true)">
+                        <i class="bi bi-file-earmark-excel-fill me-1"></i>Download All
                     </button>
                 </div>
             </div>
         </form>
     </div>
 
-    <!-- Logs Card Box -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <!-- Logs Table -->
+    <div class="card border shadow-sm rounded-4 overflow-hidden">
         <div class="card-body p-0">
             {% if logs %}
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 text-dark-slate">
-                    <thead class="table-light text-secondary small">
-                        <tr>
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background-color: #f8fafc;">
+                        <tr class="text-secondary small">
                             <th class="px-4 py-3 text-center" style="width: 60px;">#</th>
-                            <th class="py-3">Recipient Name</th>
-                            <th class="py-3">Recipient Email</th>
-                            <th class="py-3">Campaign Subject</th>
-                            <th class="py-3">Template</th>
-                            <th class="py-3" style="width: 130px;">Status</th>
-                            <th class="py-3">Error Context</th>
-                            <th class="px-4 py-3 text-end" style="width: 200px;">Dispatched At</th>
+                            <th class="py-3">Name</th>
+                            <th class="py-3">Email Address</th>
+                            <th class="py-3">Email Subject</th>
+                            <th class="py-3">Design</th>
+                            <th class="py-3" style="width: 120px;">Status</th>
+                            <th class="py-3">Error Details</th>
+                            <th class="px-4 py-3 text-end" style="width: 200px;">Sent At</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,19 +106,19 @@ Email Logs | Email Upload Tool
                                 {{ log.subject }}
                             </td>
                             <td>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 rounded-pill px-2.5 py-1 small">
+                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 py-1 small">
                                     {{ log.template_display }}
                                 </span>
                             </td>
                             <td>
                                 {% if log.status == "Sent" %}
-                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1.5">
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">
                                     <i class="bi bi-check-circle-fill me-1"></i>
                                     Sent
                                 </span>
                                 {% else %}
-                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1.5">
-                                    <i class="bi bi-exclamation-octagon-fill me-1"></i>
+                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i>
                                     Failed
                                 </span>
                                 {% endif %}
@@ -129,7 +129,7 @@ Email Logs | Email Upload Tool
                                         {{ log.error_message }}
                                     </span>
                                 {% else %}
-                                    <span class="text-muted">-</span>
+                                    <span class="text-muted">—</span>
                                 {% endif %}
                             </td>
                             <td class="px-4 text-end text-muted small">
@@ -141,21 +141,20 @@ Email Logs | Email Upload Tool
                 </table>
             </div>
             
-            <!-- Pagination Controls -->
+            <!-- Pagination -->
             {% if logs.has_other_pages %}
             <div class="card-footer bg-white border-0 py-4">
                 <nav>
                     <ul class="pagination justify-content-center mb-0 gap-1">
-                        <!-- First & Previous -->
                         {% if logs.has_previous %}
                         <li class="page-item">
-                            <a class="page-link rounded-3" href="?page=1&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="First">
-                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            <a class="page-link rounded-3" href="?page=1&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}">
+                                <span>&laquo;&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link rounded-3" href="?page={{ logs.previous_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
+                            <a class="page-link rounded-3" href="?page={{ logs.previous_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}">
+                                <span>&laquo;</span>
                             </a>
                         </li>
                         {% else %}
@@ -167,29 +166,27 @@ Email Logs | Email Upload Tool
                         </li>
                         {% endif %}
 
-                        <!-- Page Numbers -->
                         {% for num in logs.paginator.page_range %}
                             {% if logs.number == num %}
                             <li class="page-item active">
-                                <span class="page-link rounded-3 px-3.5">{{ num }}</span>
+                                <span class="page-link rounded-3 px-3">{{ num }}</span>
                             </li>
                             {% elif num > logs.number|add:'-3' and num < logs.number|add:'3' %}
                             <li class="page-item">
-                                <a class="page-link rounded-3 px-3.5" href="?page={{ num }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}">{{ num }}</a>
+                                <a class="page-link rounded-3 px-3" href="?page={{ num }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}">{{ num }}</a>
                             </li>
                             {% endif %}
                         {% endfor %}
 
-                        <!-- Next & Last -->
                         {% if logs.has_next %}
                         <li class="page-item">
-                            <a class="page-link rounded-3" href="?page={{ logs.next_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
+                            <a class="page-link rounded-3" href="?page={{ logs.next_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}">
+                                <span>&raquo;</span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link rounded-3" href="?page={{ logs.paginator.num_pages }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}" aria-label="Last">
-                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            <a class="page-link rounded-3" href="?page={{ logs.paginator.num_pages }}&start_date={{ start_date }}&end_date={{ end_date }}&status={{ status }}">
+                                <span>&raquo;&raquo;</span>
                             </a>
                         </li>
                         {% else %}
@@ -206,19 +203,19 @@ Email Logs | Email Upload Tool
             {% endif %}
 
             {% else %}
-            <!-- Empty Log Placeholder -->
+            <!-- Empty State -->
             <div class="text-center py-5">
-                <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 80px; height: 80px; background-color: var(--primary-soft) !important;">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 80px; height: 80px; background-color: rgba(13, 110, 253, 0.06);">
                     <i class="bi bi-inbox text-primary fs-2"></i>
                 </div>
-                <h4 class="fw-bold text-dark-slate mb-1">
-                    No logs found
+                <h4 class="fw-bold mb-1" style="color: #1e293b;">
+                    No emails sent yet
                 </h4>
                 <p class="text-muted small mb-4">
-                    Send bulk emails from the campaign wizard tab to record delivery outcomes.
+                    Once you send emails, they will appear here so you can track them.
                 </p>
                 <a href="{% url 'dashboard' %}?tab=campaign" class="btn btn-primary rounded-3 px-4 py-2">
-                    <i class="bi bi-send-plus-fill me-2"></i>Start Campaign
+                    <i class="bi bi-send me-2"></i>Send New Emails
                 </a>
             </div>
             {% endif %}

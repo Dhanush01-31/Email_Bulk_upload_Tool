@@ -1,26 +1,24 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Login | Email Upload Tool
+Login | Email Tool
 {% endblock %}
 
 {% block content %}
 <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
     <div class="col-xl-4 col-lg-5 col-md-7 col-sm-9">
-        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-            <!-- Decorative colored bar on top -->
-            <div style="height: 5px; background: linear-gradient(90deg, var(--primary) 0%, #818cf8 100%);"></div>
+        <div class="card shadow-sm border rounded-4 overflow-hidden">
             
             <div class="card-body p-5">
                 <div class="text-center mb-4">
-                    <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 72px; height: 72px; background-color: var(--primary-soft) !important;">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 72px; height: 72px; background-color: rgba(13, 110, 253, 0.06);">
                         <i class="bi bi-envelope-open-fill text-primary" style="font-size: 32px;"></i>
                     </div>
-                    <h3 class="fw-bold tracking-tight text-dark-slate mb-1">
+                    <h3 class="fw-bold mb-1" style="color: #1e293b;">
                         Welcome back
                     </h3>
                     <p class="text-muted small">
-                        Access your bulk email campaign suite
+                        Sign in to your account
                     </p>
                 </div>
 
@@ -37,13 +35,13 @@ Login | Email Upload Tool
                             Username
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-white text-muted">
                                 <i class="bi bi-person"></i>
                             </span>
                             <input
                                 type="text"
                                 name="username"
-                                class="form-control border-start-0 bg-light"
+                                class="form-control"
                                 placeholder="Enter your username"
                                 required>
                         </div>
@@ -51,27 +49,25 @@ Login | Email Upload Tool
 
                     <!-- Password -->
                     <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label class="form-label small fw-semibold text-secondary mb-0">
-                                Password
-                            </label>
-                        </div>
+                        <label class="form-label small fw-semibold text-secondary">
+                            Password
+                        </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-white text-muted">
                                 <i class="bi bi-lock"></i>
                             </span>
                             <input
                                 type="password"
                                 name="password"
-                                class="form-control border-start-0 bg-light"
+                                class="form-control"
                                 placeholder="Enter your password"
                                 required>
                         </div>
                     </div>
 
                     <!-- Submit -->
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary py-2.5 rounded-3">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary py-2 rounded-3">
                             <i class="bi bi-box-arrow-in-right me-2"></i>
                             Sign In
                         </button>

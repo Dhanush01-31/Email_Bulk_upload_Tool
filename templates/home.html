@@ -1,126 +1,123 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Home | Email Bulk Upload Tool
+Home | Email Tool
 {% endblock %}
 
 {% block content %}
+
 <!-- Hero Section -->
-<section class="py-5 my-md-4">
+<section class="py-5 my-md-3">
     <div class="row align-items-center g-5">
-        <div class="col-lg-6">
-            <div class="d-inline-flex align-items-center gap-2 bg-light rounded-pill px-3 py-1.5 mb-4" style="background-color: var(--primary-soft) !important;">
-                <span class="badge rounded-pill bg-primary">New Campaign Flow</span>
-                <span class="text-primary small fw-semibold">Interactive 8-Step Wizard</span>
-            </div>
-            <h1 class="display-4 fw-extrabold text-dark-slate mb-3" style="line-height: 1.15; letter-spacing: -1.5px;">
-                Enterprise Bulk Email Campaigns Made Simple
+        <div class="col-lg-7">
+            <span class="badge rounded-pill text-dark mb-3 px-3 py-2" style="background-color: var(--primary-soft);">
+                <i class="bi bi-stars me-1"></i> Easy Step-by-Step Process
+            </span>
+            <h1 class="fw-bold mb-3" style="font-size: 2.75rem; line-height: 1.2; letter-spacing: -0.5px; color: var(--dark-slate);">
+                Send Emails to Many People at Once
             </h1>
-            <p class="lead text-secondary mt-3 mb-4 fs-5" style="line-height: 1.6;">
-                Upload list data via Excel, personalize dynamically, preview templates in real time, and execute secure delivery with detailed campaign reports.
+            <p class="text-secondary mb-4" style="font-size: 1.1rem; line-height: 1.7;">
+                Upload an Excel file with email addresses, write your message, choose a design, and send.
+                It's that simple. Your emails go out safely in the background.
             </p>
-            <div class="d-flex flex-wrap gap-3 mt-4">
+            <div class="d-flex flex-wrap gap-2 mt-4">
                 {% if user.is_authenticated %}
-                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4 py-2.5 rounded-3 fs-6">
-                    <i class="bi bi-speedometer2 me-2"></i>
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4 py-2 rounded-3">
+                    <i class="bi bi-grid-1x2 me-2"></i>
                     Go to Dashboard
                 </a>
                 {% else %}
-                <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 py-2.5 rounded-3 fs-6">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 py-2 rounded-3">
                     <i class="bi bi-box-arrow-in-right me-2"></i>
-                    Access Account
+                    Login
                 </a>
-                <a href="{% url 'register' %}" class="btn btn-outline-dark btn-lg px-4 py-2.5 rounded-3 fs-6 border-slate">
+                <a href="{% url 'register' %}" class="btn btn-outline-dark btn-lg px-4 py-2 rounded-3">
                     <i class="bi bi-person-plus me-2"></i>
-                    Register Now
+                    Sign Up
                 </a>
                 {% endif %}
             </div>
         </div>
-        <div class="col-lg-6 text-center">
-            <div class="position-relative d-inline-block">
-                <!-- Visual Background Glow -->
-                <div class="position-absolute translate-middle bg-primary opacity-10 rounded-circle filter-blur" style="width: 300px; height: 300px; top: 50%; left: 50%; filter: blur(60px); z-index: -1;"></div>
-                <div class="bg-white p-5 rounded-5 shadow-lg border border-light card-hover">
-                    <i class="bi bi-envelope-paper-heart-fill text-primary" style="font-size: 160px; line-height: 1;"></i>
-                    <div class="mt-4">
-                        <span class="text-secondary fw-semibold small">POWERED BY INESS CONSULTING</span>
-                    </div>
+        <div class="col-lg-5 text-center d-none d-lg-block">
+            <div class="bg-white p-5 rounded-4 shadow-sm border">
+                <i class="bi bi-envelope-paper-heart-fill" style="font-size: 120px; line-height: 1; color: var(--primary);"></i>
+                <div class="mt-3">
+                    <span class="text-secondary small">Powered by InESS Consulting</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Stats Grid / Features -->
-<section class="py-5 my-md-4 border-top">
-    <div class="text-center mb-5 max-w-2xl mx-auto">
-        <h2 class="fw-bold text-dark-slate mb-2">Designed for High Performance</h2>
-        <p class="text-secondary">Explore the utility elements that make mass emailing reliable and dynamic.</p>
+<!-- How It Works -->
+<section class="py-5 my-md-3 border-top">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold mb-2" style="color: var(--dark-slate);">How It Works</h2>
+        <p class="text-secondary">Three simple steps to send emails to hundreds of people.</p>
     </div>
     <div class="row g-4">
-        <!-- Feature 1 -->
+
+        <!-- Step 1 -->
         <div class="col-md-4">
-            <div class="card h-100 p-4 border-0 shadow-sm rounded-4 card-hover">
-                <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-3 mb-4" style="width: 56px; height: 56px; background-color: rgba(16, 185, 129, 0.08) !important;">
-                    <i class="bi bi-file-earmark-excel text-success fs-3"></i>
+            <div class="card h-100 p-4 border rounded-4 shadow-sm">
+                <div class="d-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 48px; height: 48px; background-color: var(--primary-soft);">
+                    <i class="bi bi-file-earmark-excel fs-4" style="color: var(--primary);"></i>
                 </div>
-                <h4 class="fw-bold text-dark-slate mb-3">Instant Excel Parser</h4>
-                <p class="text-secondary mb-0 small" style="line-height: 1.6;">
-                    Upload mailing list Excel files. Read and parse contact details locally in the browser to validate formats instantly before campaigns go out.
+                <h5 class="fw-bold mb-2" style="color: var(--dark-slate);">Upload Your Contact List</h5>
+                <p class="text-secondary mb-0 small" style="line-height: 1.7;">
+                    Upload an Excel or CSV file with your contacts' names and email addresses. The tool reads it instantly and shows you a preview.
                 </p>
             </div>
         </div>
-        <!-- Feature 2 -->
+
+        <!-- Step 2 -->
         <div class="col-md-4">
-            <div class="card h-100 p-4 border-0 shadow-sm rounded-4 card-hover">
-                <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-3 mb-4" style="width: 56px; height: 56px; background-color: var(--primary-soft) !important;">
-                    <i class="bi bi-eye text-primary fs-3"></i>
+            <div class="card h-100 p-4 border rounded-4 shadow-sm">
+                <div class="d-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 48px; height: 48px; background-color: var(--primary-soft);">
+                    <i class="bi bi-eye fs-4" style="color: var(--primary);"></i>
                 </div>
-                <h4 class="fw-bold text-dark-slate mb-3">Live Email Preview</h4>
-                <p class="text-secondary mb-0 small" style="line-height: 1.6;">
-                    Cycle through recipients in a live email window mock. Verify exact text bindings, formatting, and attachment previews before dispatching.
+                <h5 class="fw-bold mb-2" style="color: var(--dark-slate);">Preview Before Sending</h5>
+                <p class="text-secondary mb-0 small" style="line-height: 1.7;">
+                    See exactly how your email will look on desktop and mobile before sending. Pick a design template and customise the content.
                 </p>
             </div>
         </div>
-        <!-- Feature 3 -->
+
+        <!-- Step 3 -->
         <div class="col-md-4">
-            <div class="card h-100 p-4 border-0 shadow-sm rounded-4 card-hover">
-                <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-3 mb-4" style="width: 56px; height: 56px; background-color: rgba(239, 68, 68, 0.08) !important;">
-                    <i class="bi bi-pie-chart text-danger fs-3"></i>
+            <div class="card h-100 p-4 border rounded-4 shadow-sm">
+                <div class="d-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 48px; height: 48px; background-color: var(--primary-soft);">
+                    <i class="bi bi-check2-circle fs-4" style="color: var(--primary);"></i>
                 </div>
-                <h4 class="fw-bold text-dark-slate mb-3">Campaign Analytics</h4>
-                <p class="text-secondary mb-0 small" style="line-height: 1.6;">
-                    Keep track of delivery statistics. See total sent counts, error traces, and exact timestamps in the comprehensive campaign logs dashboard.
+                <h5 class="fw-bold mb-2" style="color: var(--dark-slate);">Track Sent Emails</h5>
+                <p class="text-secondary mb-0 small" style="line-height: 1.7;">
+                    After sending, check the logs to see which emails were delivered and which ones failed. Download the report as an Excel file anytime.
                 </p>
             </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Bottom Call to Action -->
+<section class="py-5 my-md-3">
+    <div class="card rounded-4 border-0 shadow-sm text-center p-5" style="background-color: #0d6efd;">
+        <h2 class="fw-bold text-white mb-3">Ready to start sending?</h2>
+        <p class="text-white mb-4" style="opacity: 0.75;">
+            Create an account, upload your contact list, and send your first batch of emails in minutes.
+        </p>
+        <div>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 py-2 rounded-3 fw-semibold">
+                <i class="bi bi-person-plus me-2"></i> Create Account
+            </a>
+            {% else %}
+            <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4 py-2 rounded-3 fw-semibold">
+                Start Sending Emails <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+            {% endif %}
         </div>
     </div>
 </section>
 
-<!-- Action Section -->
-<section class="py-5 my-md-4">
-    <div class="card bg-dark text-white rounded-5 border-0 shadow overflow-hidden position-relative">
-        <div class="card-body p-5 p-md-5 text-center my-2 position-relative" style="z-index: 2;">
-            <h2 class="display-6 fw-bold mb-3">Build and launch campaigns in minutes</h2>
-            <p class="text-light opacity-75 max-w-xl mx-auto mb-4 px-lg-5" style="line-height: 1.6;">
-                Sign up for an account, choose a pre-configured template, import your spreadsheet, and dispatch your message list.
-            </p>
-            <div>
-                {% if not user.is_authenticated %}
-                <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 py-2.5 rounded-3 fw-semibold">
-                    <i class="bi bi-rocket me-2"></i> Get Started
-                </a>
-                {% else %}
-                <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4 py-2.5 rounded-3 fw-semibold">
-                    Launch Campaign <i class="bi bi-arrow-right ms-2"></i>
-                </a>
-                {% endif %}
-            </div>
-        </div>
-        <!-- Abstract vector backgrounds inside card -->
-        <div class="position-absolute bg-primary opacity-20 rounded-circle" style="width: 300px; height: 300px; top: -150px; right: -50px; filter: blur(80px);"></div>
-        <div class="position-absolute bg-indigo opacity-20 rounded-circle" style="width: 300px; height: 300px; bottom: -150px; left: -50px; filter: blur(80px);"></div>
-    </div>
-</section>
 {% endblock %}
